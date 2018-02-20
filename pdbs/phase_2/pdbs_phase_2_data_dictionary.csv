@@ -1,0 +1,142 @@
+﻿"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,phase_2a,,text,"Record ID",,,,,,y,,,,,,,
+current_dog_p2_2a,phase_2a,"<center>More About [event_1_arm_1][dog_name_1a]</center>",descriptive,"<center>Thank you for participating in our treatment study. The more people who participate, the better. The larger that number the more significant the data and our findings will be. We can't do it without you!
+
+Please press ""Next"" when you are ready to begin the follow-up survey for [event_1_arm_1][dog_name_1a].</center>",,,,,,,,,,,,,
+prof_help_2a,phase_2a,"<center>From Whom Did You Seek Advice</center>",yesno,"Have you ever sough professional help in an attempt to resolve the problematic behavior of [event_1_arm_1][dog_name_1a]?",,,,,,,,,RH,,,,
+prof_type_2a,phase_2a,,checkbox,"What type of professional did you consult?
+<font size=1 color=""blue"">Check all that apply</font>","3, Veterinarian, DVM (for help other than health issues) | 1, Dog trainer | 2, Dog behavior consultant",,,,,,"[prof_help_2a] = '1'",,LV,,,,
+prof_score_2a,phase_2a,,calc,"Professional score:","[prof_type_2a(1)] + [prof_type_2a(2)] + [prof_type_2a(3)]",,,,,,,,RH,,,,@HIDDEN
+prof_discover_2a,phase_2a,<center>Veterinarians</center>,yesno,"Did the veterinarian discover any medical issue that might be relevant to the behavior of [event_1_arm_1][dog_name_1a]?
+(e.g., a thyroid problem, seizures, pain)",,,,,,,"[prof_type_2a(3)] = '1'",,RH,,,,
+health_iss_2a,phase_2a,,checkbox,"Which of the following health issues were found?
+<font size=1 color=""blue"">Check all that apply</font>
+","1, Thyroid problem | 2, Seizures | 3, Pain | 4, Tumor | 5, Cognitive dysfunction | 6, Other",,,,,,"[prof_discover_2a] = '1'",,LV,,,,
+heath_oth_2a,phase_2a,,notes,"Please explain other health issue:",,,,,,,"[health_iss_2a(6)] = '1'",,LV,,,,
+trainer_mult_2a,phase_2a,<center>Trainers</center>,yesno,"Have you seen multiple dog trainers for [event_1_arm_1][dog_name_1a]?",,,,,,,"[prof_type_2a(1)] = '1' ",,RH,,,,
+trainer_count_2a,phase_2a,,text,"How many dog trainers would you say you have consulted for [event_1_arm_1][dog_name_1a]?",,,number,,,,"[trainer_mult_2a] = '1'",,RH,,,,
+trainer_cred_2a,phase_2a,,radio,"Were the dog trainers credentialed?","1, Yes | 0, No | 2, I don't know",,,,,,"[prof_type_2a(1)] = '1'",,RH,,,,
+trainer_cred_type_2a,phase_2a,,radio,"Were the trainers certified by the Certification Council of Professional Dog Trainers (CPDT-KA or CPDT-KSA)?","1, Yes | 0, No | 2, I don't know",,,,,,"[trainer_cred_2a] = '1'",,RH,,,,
+consultant_mult_2a,phase_2a,<center>Consultants</center>,yesno,"Have you seen multiple dog behavior consultants for [event_1_arm_1][dog_name_1a]?",,,,,,,"[prof_type_2a(2)] = '1'",,RH,,,,
+consultant_count_2a,phase_2a,,text,"How many dog behavior consultants would you say you have consulted for [event_1_arm_1][dog_name_1a]?",,,number,,,,"[consultant_mult_2a] = '1'",,RH,,,,
+consultant_cred_2a,phase_2a,,radio,"Were the dog behavior consultants credentialed?","1, Yes | 0, No | 2, I don't know",,,,,,"[prof_type_2a(2)] = '1'",,RH,,,,
+consultant_cred_type_2a,phase_2a,,checkbox,"What type of credentials did the behavior consultants hold?
+<font size=1 color=""blue"">Check all that apply</font>","1, Certification Council of Professional Dog Trainers, Certified Behavior Consultant, CBCC-KA | 2, International Association of Animal Behavior Consultants, Certified Dog Behavior Consultant, CDBC | 3, Animal Behavior Society Certified Behaviorist, CAAB or ACAAB | 4, Board Certified Veterinary Behaviorist, DACVB | 5, Other",,,,,,"[consultant_cred_2a] = '1'",,LV,,,,
+consultant_cred_other_2a,phase_2a,,notes,"Please explain other consultant credential:",,,,,,,"[consultant_cred_type_2a(5)] = '1'",,LV,,,,
+best_prof_2a,phase_2a,"<center>Professional Recap</center>",radio,"Which type of professional worked out best in terms of results?","1, Veterinarian, DVM | 2, Non-credentialed dog trainer | 3, Credentialed dog trainer | 4, Non-credentialed behavior consultant | 5, Certified behavior consultant - CBCC-KA or CDBC | 6, Certified behaviorist - ACAAB or CAAB | 7, Certified veterinary behaviorist - DACVB | 8, Combination of the above professionals",,,,,,"[prof_score_2a] > 0",,LV,,,,
+training_methods_2a,phase_2a,,checkbox,"Which of the following methods for skill training (e.g., ""watch"", ""leave it"", ""stay"") were recommended?
+<font size=1 color=""blue"">Check all that apply</font>","1, Reward-based training (e.g., food, play, praise) | 2, Punishment -based training (e.g., collar jerk, spray bottle, shaker can) | 3, Combination of reward and punishment-based training | 4, Compulsion (i.e., forcing the dog to do something)",,,,,,"[prof_score_2a] > 0",,LV,,,,
+equipment_2a,phase_2a,,checkbox,"What types of equipment were recommended and utilized?
+<font size=1 color=""blue"">Check all that apply</font>","1, Flat collar (leather or nylon) | 2, Martingale | 3, Slip collar, choke collar, or prong collar | 4, Head halter (e.g., Gentle Leader, Halti) | 5, Body harness - leash clips on chest | 6, Anti-bark collar that is not remote controlled (e.g., shock, tone, spray) | 7, Remote-controlled electric collar using shock, tone, or vibration | 8, Other",,,,,,"[prof_score_2a] > 0",,LV,,,,
+desc_other_equip_2a,phase_2a,,notes,"Please describe other equipment:",,,,,,,"[equipment_2a(8)] = '1'",,LH,,,,
+med_rec_2a,phase_2a,<center>Medication</center>,yesno,"Was medication recommended for [event_1_arm_1][dog_name_1a]?",,,,,,,"[prof_score_2a] > 0",,RH,,,,
+med_pursued_2a,phase_2a,,yesno,"Did you pursue the option of medication for [event_1_arm_1][dog_name_1a]?",,,,,,,"[med_rec_2a] = '1'",,RH,,,,
+todo_1,phase_2a,,descriptive,"<font color=""red"">TODO: I need to add a response field for each medication asking:
+- Dosage in mg (LL 0.25, UL 10.00)
+- Number of doses per day (1-4)
+- Used only when necessary (i.e., prn)
+- Length of time used </font>",,,,,,,,,,,,,
+med_list_2a,phase_2a,,checkbox,"Which of the following medications were administered?
+<font size=1 color=""blue"">Check all that apply</font>","1, Fluoxetine (Prozac) | 2, Sertraline (Zoloft) | 3, Paroxetine (Paxil) | 4, Citalopram (Celexa) | 5, Escitalopram (Lexapro) | 6, Clomipramine (Clomicalm) | 7, Trazadone | 8, Buspirone | 9, Valium-type drug (e.g., diazepam, alprazolam, clonazepam) | 10, Clonidine | 11, Acepromazine (Ace) | 12, Diphenhydramine (Benadryl) | 13, Other",,,,,,"[med_pursued_2a] = '1'",,LV,,,,
+desc_other_med_2a,phase_2a,,notes,"Please describe other medication:",,,,,,,"[med_list_2a(13)] = '1'",,LH,,,,
+med_combo_2a,phase_2a,,checkbox,"Which drug or combination of drugs worked best for your dogs's problem?
+<font size=1 color=""blue"">Check all that apply</font>","1, Fluoxetine (Prozac) | 2, Sertraline (Zoloft) | 3, Paroxetine (Paxil) | 4, Citalopram (Celexa) | 5, Escitalopram (Lexapro) | 6, Clomipramine (Clomicalm) | 7, Trazadone | 8, Buspirone | 9, Valium-type drug (e.g., diazepam, alprazolam, clonazepam) | 10, Clonidine | 11, Acepromazine (Ace) | 12, Diphenhydramine (Benadryl) | 13, Other",,,,,,"[med_pursued_2a] = '1'",,LV,,,,
+desc_other_combo_2a,phase_2a,,notes,"Please describe other drug combination:",,,,,,,"[med_combo_2a(13)] = '1'",,LH,,,,
+alt_treatment_2a,phase_2a,,yesno,"Did you use an alternative treatment for [event_1_arm_1][dog_name_1a]?",,,,,,,"[prof_score_2a] > 0",,RH,,,,
+alt_med_type_2a,phase_2a,,checkbox,"Which of the following alternative treatments were used?
+<font size=1 color=""blue"">Check all that apply</font>","1, Acupuncture/acupressure | 2, Aromatherapy (essential oils) | 3, CBD (cannabidiol) (e.g. Canapé™) | 4, Chiropractic (manipulation of musculoskeletal system, especially the spine) | 5, DOG TV | 6, Herbal/botanical medicine (e.g. Bach Flower Essences, Rescue Remedy) | 7, Homeopathy (based on ""like cures like"") | 8, Hormonal (melatonin, estrogen [DES]) | 9, Hydrotherapy | 10, Magnetic field therapy | 11, Massage (including Tellington Touch [T-Touch]) | 12, Music therapy (bioacoustics music, e.g. Through a Dog's Ear, Pet Acoustics) | 13, Nutraceuticals (vitamins; minerals; enzymes; Zylkene™ [milk protein = alpha-casozepine]; | 14, L-tryptophan/TP/5HTP; Anxitane (L-theanine), Omega 3, Omega 6 | 15, Pheromone therapy (calming collars, diffusers, spray) | 16, Pressure wraps (Thundershirt, Anxiety Wrap) | 17, Reiki (laying on of hands) | 18, Vision blocking (Calming cap/Thundercap)",,,,,,"[alt_treatment_2a] = '1'",,LV,,,,
+behavior_prog_rec_2a,phase_2a,"<center>Behavior Modification Programs</center>",yesno,"Was a behavior modifying strategy recommended?",,,,,,,"[prof_score_2a] > 0",,RH,,,,
+behavior_prog_2a,phase_2a,,radio,"Which behavior modifying strategy was recommended?","1, Systematic Desensitization (Systematic desensitization is a behavioral technique that involves exposing a dog gradually and systematically to an anxiety-producing person, other animal, object or event beginning with the stimulus at a very low level (e.g., the subject to be desensitized is presented with the fear inducing stimulus at a reduced intensity by arranging for it to be farther away or with fear of sounds substantially reducing the volume and then gradually increasing exposure to the stimulus until it is tolerated at full intensity). | 2, Counterconditioning (teaching an opposite behavioral response to a once fear-inducing stimulus, e.g., a stranger's approach initially = fear; that response is changed so that the stranger's approach always predicts a valuable reward, i.e. stranger = good stuff) | 3, A combination of systematic desensitization and counterconditioning | 4, Leadership program (a.k.a. Learn to earn, Nothing in life is free, No free lunch, Working for a living, ""Say please."") | 5, Medication - A veterinarian prescribed medication for use during behavior modification supervised by a trainer or behavior specialist | 6, Medication - A veterinarian prescribed medication as a standalone treatment (e.g., without the addition of training/behavior modification)",,,,,,"[behavior_prog_rec_2a] = '1'",,LV,,,,
+todo_2,phase_2a,"<center>Response To Treatment</center>",descriptive,"<font color=""red"">TODO: The following need to be added:
+- The inclusion of a one sentence instruction above the scale for each section has been requested
+- Added an ""approximate time until improvement was seen (in weeks) after each section</font>",,,,,,,,,,,,,
+agg_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment For Aggression</center>",,,,,,,,,,,,,
+aggression_1_2a,phase_2a,,radio,"Aggression to familiar people in the home","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_2_2a,phase_2a,,radio,"Aggression to strangers visiting the home","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_3_2a,phase_2a,,radio,"Aggression to strangers away from home","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_4_2a,phase_2a,,radio,"Aggression to another dog in the home","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_5_2a,phase_2a,,radio,"Aggression to unfamiliar dogs visiting the home","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_6_2a,phase_2a,,radio,"Aggression to unfamiliar dogs outside on walks (off lead)","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_7_2a,phase_2a,,radio,"Aggression to unfamiliar dogs outside on walks (on lead)","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_8_2a,phase_2a,,radio,"Aggression to veterinarians","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_9_2a,phase_2a,,radio,"Aggression to trainers","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_10_2a,phase_2a,,radio,"Aggression to groomers","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+aggression_11_2a,phase_2a,,radio,"Aggression to animals other than dogs in the home","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,aggression_matrix_2a,,
+agg_sum_2a,phase_2a,,calc,"Aggression sum:","[aggression_1_2a] +
+[aggression_2_2a] +
+[aggression_3_2a] +
+[aggression_4_2a] +
+[aggression_5_2a] +
+[aggression_6_2a] +
+[aggression_7_2a] +
+[aggression_8_2a] +
+[aggression_9_2a] +
+[aggression_10_2a] +
+[aggression_11_2a]",,,,,,,,,,,,@HIDDEN
+agg_avg_2a,phase_2a,,calc,"Aggression average score:",1,,,,,,,,,,,,@HIDDEN
+fearful_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment For Fearfulness</center>",,,,,,,,,,,,,
+fear_1_2a,phase_2a,,radio,"Separation anxiety","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_2_2a,phase_2a,,radio,"Thunderstorm phobia","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_3_2a,phase_2a,,radio,"Other noise phobia","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_4_2a,phase_2a,,radio,"Frightened of people (no aggression)","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_5_2a,phase_2a,,radio,"Frightened of dogs (no aggression)","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_6_2a,phase_2a,,radio,"Post traumatic stress disorder (PTSD)","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_7_2a,phase_2a,,radio,"General anxiety (panting, pacing, startle)","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_8_2a,phase_2a,,radio,"Other fear","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,fearful_matrix_2a,,
+fear_sum_2a,phase_2a,,calc,"Fear sum:","[fear_1_2a] +
+[fear_2_2a] +
+[fear_3_2a] +
+[fear_4_2a] +
+[fear_5_2a] +
+[fear_6_2a] +
+[fear_7_2a] +
+[fear_8_2a]",,,,,,,,,,,,@HIDDEN
+repetitive_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment For A Repetitive Behavior</center>",,,,,,,,,,,,,
+todo_3,phase_2a,,descriptive,"<font color=""red"">TODO: Add the following for each question when selected:
+- Rating for treatment (with medication) 1-7
+- Rating for treatment (w/o medication) 1-7
+- Approximate time until improvement was first observed (in weeks)
+- Approximate time until maximum improvement was observed (in weeks)",,,,,,,,,,,,,
+repbeh_1_2a,phase_2a,,radio,Spinning,"1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_2_2a,phase_2a,,radio,"Tail chasing","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_3_2a,phase_2a,,radio,"Shadow or light chasing","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_4_2a,phase_2a,,radio,"Running in a geometric pattern","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_5_2a,phase_2a,,radio,"Compulsive licking of the wrist or hock","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_6_2a,phase_2a,,radio,"Fly snapping (no flies around)","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_7_2a,phase_2a,,radio,"Sucking the flank region and/or blankets","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_8_2a,phase_2a,,radio,"Tennis ball fetish","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_9_2a,phase_2a,,radio,"Collecting objects, arranging them in piles or patterns","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_10_2a,phase_2a,,radio,"Nail biting","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_11_2a,phase_2a,,radio,"Digging in the yard","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_12_2a,phase_2a,,radio,"Stone/Rock Chewing","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_13_2a,phase_2a,,radio,Other,"1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,repetitive_matrix_2a,,
+repbeh_sum_2a,phase_2a,,calc,"Repetitive sum:",1,,,,,,,,,,,,@HIDDEN
+repbeh_count_2a,phase_2a,,calc,"Repetitive count:",1,,,,,,,,,,,,@HIDDEN
+treatment_time_2a,phase_2a,,text,"Approximate time until improvement was seen:",,"<font size=2 color=""blue"">in weeks</font>",number,,,,,,,,,,
+soiling_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment Of Simple House Soiling</center>",,,,,,,,,,,,,
+soiling_1_2a,phase_2a,,radio,"Rating for response to treatment for inappropriate urination and/or defecation","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,soiling_matrix_2a,,
+todo_4,phase_2a,,descriptive,"<font color=""red"">TODO: Add response to treatment for:
+- urine/fecal marking
+- urination when dog is excited/overwhelmed
+- rolling in disgusting stuff
+- running away/escaping</font>",,,,,,,,,,,,,
+soiling_sum_2a,phase_2a,,calc,"Soiling sum:",[soiling_1_2a],,,,,,,,,,,,@HIDDEN
+barking_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment Of Excessive Barking</center>",,,,,,,,,,,,,
+barking_1_2a,phase_2a,,radio,"Rating for response to treatment for exessive barking","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,barking_matrix_2a,,
+barking_sum_2a,phase_2a,,calc,"Barking sum:",[barking_1_2a],,,,,,,,,,,,@HIDDEN
+jumping_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment Of Nuisance Jumping Up</center>",,,,,,,,,,,,,
+jumping_1_2a,phase_2a,,radio,"Rating for response to treatment for nuisance jumping","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,jumping_matrix_2a,,
+jumping_sum_2a,phase_2a,,calc,"Jumping sum:",[jumping_1_2a],,,,,,,,,,,,@HIDDEN
+mounting_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment Of Mounting/Humping</center>",,,,,,,,,,,,,
+mounting_1_2a,phase_2a,,radio,"Rating for response to treatment for mounting/humping","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,mounting_matrix_2a,,
+mounting_sum_2a,phase_2a,,calc,"Mounting sum:",[mounting_1_2a],,,,,,,,,,,,@HIDDEN
+feces_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment Of Eating Feces</center>",,,,,,,,,,,,,
+feces_1_2a,phase_2a,,radio,"Rating for response of treatment to eating feces","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,feces_matrix_2a,,
+feces_sum_2a,phase_2a,,calc,"Eating feces sum:",[feces_1_2a],,,,,,,,,,,,@HIDDEN
+destrucive_desc_2a,phase_2a,,descriptive,"<center>Response To Treatment Of Destructive Behavior</center>",,,,,,,,,,,,,
+destructive_1_2a,phase_2a,,radio,"Rating for response of treatment to destructive behavior","1, More than 75% worse | 2, 50% worse | 3, 25% worse | 4, No change | 5, 25% better | 6, 50% better | 7, More than 75% better",,,,,,,,,,destructive_matrix_2a,,
+destructive_sum_2a,phase_2a,,calc,"Destructive sum:",[destructive_1_2a],,,,,,,,,,,,@HIDDEN
+followup_num_2a,phase_2a,"<center>Final Thoughts</center>",calc,"Follow-up sum:",1,,,,,,,,,,,,@HIDDEN
+followup_denom_2a,phase_2a,,calc,"Follow-up count:",1,,,,,,,,,,,,@HIDDEN
+followup_avg_2a,phase_2a,,calc,"Follow-up average:",[followup_num_2a]/[followup_denom_2a],,,,,,,,,,,,@HIDDEN
+final_word_2a,phase_2a,,radio,"For those of you whose dogs did not improve or got worse, what was the outcome for your dog?","1, Kept my dog anyway | 2, Rehomed the dog | 3, Surrendered the dog to a shelter, rescue, or pound | 4, Euthanized the dog (i.e., put to sleep)",,,,,,,,LV,,,,

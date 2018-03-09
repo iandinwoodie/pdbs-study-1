@@ -6,13 +6,18 @@ import csv
 
 
 # Verify the file to be scrubbed.
-print(os.listdir(os.getcwd()))
 infile = str(input('Enter file to be scrubbed of duplicates: '))
 if not os.path.isfile(infile):
     print('Error: entered file does not exist')
     quit()
-base = os.path.splitext(infile)[0]
-outfile = base + '.mod.csv'
+
+# Verify the output file.
+base = os.path.splitext(os.path.basename(infile))[0]
+outfile = base + '.data'
+tempfile = ''
+if infile == outfile:
+    tempfile = outfile
+    outfile = outfile + '.temp'
 
 # Parse the raw data with relevant filters.
 dupe_cnt = 0
@@ -70,6 +75,9 @@ with open(infile, 'r') as fin:
                 dog_dict[user_hash] = dogs
                 #writer.writerow(row)
 
+# If a temp file was used, move the results back to the requested destination.
+if not tempfile == '':
+    shutil.move(outfile, tempfile)
+
 # Let the user know the script has finished.
-print('Dupes: %d' %dupe_cnt)
-print('Scrubbing of %s is complete.' %infile)
+print('Duplicates scrubbing complete.')

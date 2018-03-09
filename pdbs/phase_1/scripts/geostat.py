@@ -38,6 +38,7 @@ def create_postal_dictionary():
                       %(user_hash, postal_dict[user_hash], postal_code))
     return postal_dict
 
+
 def determine_postal_country(postal_code):
     if postal_code != 'N/A':
         # US, Germany, Mexico, Dominican Republic, Spain, Finland, France,
@@ -78,7 +79,9 @@ def reformat_postal_code(postal_code, codes):
 def fetch_postal_info(postal_dict):
     country_dict = {}
     api_url = 'http://api.zippopotam.us/'
+    hash_cnt = 0
     for email in postal_dict:
+        hash_cnt += 1
         postal_code = postal_dict[email]
         if postal_code == 'N/A':
             cur_country = 'Undisclosed'
@@ -93,9 +96,10 @@ def fetch_postal_info(postal_dict):
                     with urllib.request.urlopen(cur_url) as response:
                         data = json.loads(response.read())
                         if 'country' in data:
-                            print(data['country'])
+                            print('user %d - %s' %(hash_cnt, data['country']))
                             info_found = True
                             cur_country = data['country']
+                            break
                 except:
                     pass
             if not info_found:

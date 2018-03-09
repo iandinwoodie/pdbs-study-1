@@ -7,24 +7,20 @@ import csv
 
 # Verify the file to be scrubbed.
 print(os.listdir(os.getcwd()))
-filename = str(input('Enter file to be scrubbed of duplicates: '))
-if not os.path.isfile(filename):
-    print('Error: entered filename does not exist')
+infile = str(input('Enter file to be scrubbed of duplicates: '))
+if not os.path.isfile(infile):
+    print('Error: entered file does not exist')
     quit()
-
-# Create a backup of the original file if does not exist.
-backup = filename + '.bak'
-if not os.path.isfile(backup):
-    print('Creating a backup of the the original file ...')
-    shutil.copy(filename, backup)
+base = os.path.splitext(infile)[0]
+outfile = base + '.mod.csv'
 
 # Parse the raw data with relevant filters.
 dupe_cnt = 0
 status_dict = {}
 data_dict = {}
 dog_dict = {}
-with open(backup, 'r') as fin:
-    with open(filename, 'w') as fout:
+with open(infile, 'r') as fin:
+    with open(outfile, 'w') as fout:
         writer = csv.writer(fout, delimiter=',', lineterminator='\n')
         first_row = True
         for row in csv.reader(fin, delimiter=','):
@@ -76,4 +72,4 @@ with open(backup, 'r') as fin:
 
 # Let the user know the script has finished.
 print('Dupes: %d' %dupe_cnt)
-print('Scrubbing of %s is complete.' %filename)
+print('Scrubbing of %s is complete.' %infile)

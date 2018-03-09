@@ -1,4 +1,8 @@
-"""Scrubs emails from raw data by replacement with MD5 hashes."""
+"""
+Scrubs emails from raw data by replacement with MD5 hashes.
+The file input will contained the hashed emails.
+A backup is created to preserve the original data.
+"""
 
 import re
 import os
@@ -9,23 +13,23 @@ import hashlib
 
 # Verify the file to be scrubbed of emails.
 print(os.listdir(os.getcwd()))
-filename = str(input('Enter file to be scrubbed of emails: '))
-if not os.path.isfile(filename):
-    print('Error: entered filename does not exist')
+infile = str(input('Enter file to be scrubbed of emails: '))
+if not os.path.isfile(infile):
+    print('Error: entered file does not exist')
     quit()
 
 # Create a backup of the original file if does not exist.
-backup = filename + '.bak'
+backup = infile + '.bak'
 if not os.path.isfile(backup):
     print('Creating a backup of the the original file ...')
-    shutil.copy(filename, backup)
+    shutil.copy(infile, backup)
 
 # Scrub out the email address and replace with MD5 hashes.
 hash_dict = {}
 dupe_cnt = 0
 m = hashlib.md5()
 with open(backup, 'r') as fin:
-    with open(filename, 'w') as fout:
+    with open(infile, 'w') as fout:
         writer = csv.writer(fout, delimiter=',', lineterminator='\n')
         first_row = True
         for row in csv.reader(fin, delimiter=','):
@@ -44,5 +48,4 @@ with open(backup, 'r') as fin:
             writer.writerow(row)
 
 # Let the user know the script has finished.
-print('dupes: %d' %dupe_cnt)
-print('Email scrubbing of %s is complete.' %filename)
+print('Email scrubbing is complete.')

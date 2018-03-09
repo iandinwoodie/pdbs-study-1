@@ -1,5 +1,5 @@
 """
-Scrubs emails from raw data by replacement with MD5 hashes.
+Replace emails with MD5 hashes.
 The file input will contained the hashed emails.
 A backup is created to preserve the original data.
 """
@@ -12,8 +12,7 @@ import hashlib
 
 
 # Verify the file to be scrubbed of emails.
-print(os.listdir(os.getcwd()))
-infile = str(input('Enter file to be scrubbed of emails: '))
+infile = str(input('Enter file to hash emails: '))
 if not os.path.isfile(infile):
     print('Error: entered file does not exist')
     quit()
@@ -48,4 +47,4 @@ with open(backup, 'r') as fin:
             writer.writerow(row)
 
 # Let the user know the script has finished.
-print('Email scrubbing is complete.')
+print('Email hashing complete.')

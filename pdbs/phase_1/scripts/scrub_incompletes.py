@@ -6,24 +6,25 @@ import csv
 
 
 # Verify the file to be scrubbed.
-print(os.listdir(os.getcwd()))
-filename = str(input('Enter file to be scrubbed of incompletes: '))
-if not os.path.isfile(filename):
-    print('Error: entered filename does not exist')
+infile = str(input('Enter file to be scrubbed of incompletes: '))
+if not os.path.isfile(infile):
+    print('Error: entered file does not exist')
     quit()
 
-# Create a backup of the original file if does not exist.
-backup = filename + '.bak'
-if not os.path.isfile(backup):
-    print('Creating a backup of the the original file ...')
-    shutil.copy(filename, backup)
+# Verify the output file.
+base = os.path.splitext(os.path.basename(infile))[0]
+outfile = base + '.data'
+tempfile = ''
+if infile == outfile:
+    tempfile = outfile
+    outfile = outfile + '.temp'
 
 # Parse the raw data with relevant filters.
 partial_cnt = 0
 complete_cnt = 0
 incomplete_cnt = 0
-with open(backup, 'r') as fin:
-    with open(filename, 'w') as fout:
+with open(infile, 'r') as fin:
+    with open(outfile, 'w') as fout:
         writer = csv.writer(fout, delimiter=',', lineterminator='\n')
         first_row = True
         for row in csv.reader(fin, delimiter=','):
@@ -46,7 +47,11 @@ with open(backup, 'r') as fin:
                 first_row = False
             writer.writerow(row)
 
+# If a temp file was used, move the results back to the requested destination.
+if not tempfile == '':
+    shutil.move(outfile, tempfile)
+
 # Let the user know the script has finished.
 print('Partial: %d, Complete: %d, Incomplete: %d'
       %(partial_cnt, complete_cnt, incomplete_cnt))
-print('Scrubbing of %s is complete.' %filename)
+print('Incompletes scrubbing complete.')

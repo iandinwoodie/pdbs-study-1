@@ -1,9 +1,14 @@
 """
 Scrubs incompletes from raw data.
 
-Criteria for an incomplete entry:
+Criteria for incompleteness:
     - incomplete welcome survey
     - less than one complete dog-specific survey
+
+Criteria for partial completeness:
+    - complete welcome survey
+    - at least one complete dog-specific survey
+    - incomplete feedback survey
 """
 
 import os

@@ -1,4 +1,10 @@
-"""Scrubs incompletes from raw data."""
+"""
+Scrubs incompletes from raw data.
+
+Criteria for an incomplete entry:
+    - incomplete welcome survey
+    - less than one complete dog-specific survey
+"""
 
 import os
 import shutil

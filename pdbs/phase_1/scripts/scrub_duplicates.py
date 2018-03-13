@@ -1,4 +1,27 @@
-"""Scrubs duplicates from raw data."""
+"""
+Scrubs duplicates from raw data.
+
+Criteria to update existing response:
+    - The updated response must not replace a complete entry for a specific dog
+      with an incomplete entry.
+    - The updated response must not replace a complete entry for a specific dog
+      with an entry for a different dog.
+    - The updated response must not detract from the existing data of a complete
+      entry for a specific dog.
+
+Criteria to dispose subsequent response:
+    - The updated response replaces a complete entry for a specific dog with an
+      incomplete entry.
+    - The updated response replaces a complete entry for a specific dog with an
+      entry for a different dog.
+    - The updated response detracts from the existing data of a complete entry
+      for a specific dog.
+
+Criteria to keep existing and subsequent responses:
+    - Both the existing and updated responses contain complete dog-specific
+      entries.
+    - No complete entry for the same specific dog is shared in both responses.
+"""
 
 import os
 import shutil

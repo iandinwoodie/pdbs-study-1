@@ -81,17 +81,16 @@ with open(infile, 'r') as fin:
                                 write_row = True
                             else:
                                 print('but less complete data, discard updated')
+                        elif bool(new_dogs.intersection(old_dogs)):
+                            print('Duplicate found: at least one dog shared, ', end='')
+                            if status_sum_dict[user_hash] <= status_sum:
+                                print('but more complete data, save updated')
+                                write_row = True
+                            else:
+                                print('but less complete data, discard updated')
                         else:
-                            # For mismatched dog entries, see if there are similarities.
-                            print('Duplicate found: UNCLASSIFIED')
-                        #print(bool(set(dogs).symmetric_difference(dog_dict[user_hash])))
-                        #if dog_dict[user_hash] == dogs and status_dict[user_hash] == status:
-                            #print('MATCH %s %s' %(data_dict[user_hash][0], row[0]))
-                            #print(set(data_dict[user_hash][1:]).symmetric_difference(row[1:]))
-                    print(dog_dict[user_hash], end=' - ')
-                    print(status_dict[user_hash])
-                    print(dogs, end=' - ')
-                    print(status)
+                            print('Duplicate found: no shared data, save both')
+                            write_row = True
                 else:
                     write_row = True
             else:
@@ -101,7 +100,7 @@ with open(infile, 'r') as fin:
                 status_dict[user_hash] = status
                 dog_dict[user_hash] = dogs
                 status_sum_dict[user_hash] = status_sum
-                #writer.writerow(row)
+                writer.writerow(row)
 
 # If a temp file was used, move the results back to the requested destination.
 if not tempfile == '':

@@ -28,19 +28,17 @@ if not os.path.isfile(infile):
     print('Error: entered file does not exist')
     quit()
 
-# Verify the output file.
+# Make a copy of the input file.
 base = os.path.splitext(os.path.basename(infile))[0]
 outfile = base + '.data'
-tempfile = ''
-if infile == outfile:
-    tempfile = outfile
-    outfile = outfile + '.temp'
+bakfile = base + '.bak'
+shutil.copy(infile, bakfile)
 
 # Parse the raw data with relevant filters.
 partial_cnt = 0
 complete_cnt = 0
 incomplete_cnt = 0
-with open(infile, 'r') as fin:
+with open(bakfile, 'r') as fin:
     with open(outfile, 'w') as fout:
         writer = csv.writer(fout, delimiter=',', lineterminator='\n')
         first_row = True
@@ -64,9 +62,8 @@ with open(infile, 'r') as fin:
                 first_row = False
             writer.writerow(row)
 
-# If a temp file was used, move the results back to the requested destination.
-if not tempfile == '':
-    shutil.move(outfile, tempfile)
+# Delete copy of input file.
+os.remove(bakfile)
 
 # Let the user know the script has finished.
 print('Partial: %d, Complete: %d, Incomplete: %d'

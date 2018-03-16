@@ -45,7 +45,7 @@ with open(bakfile, 'r') as fin:
         for row in csv.reader(fin, delimiter=','):
             if not first_row:
                 status_sum = (int(row[10]) + int(row[145]) + int(row[280])
-                              + int(row[415]) + int(row[550]) + int(row[688]))
+                              + int(row[415]) + int(row[550]) + int(row[684]))
                 if status_sum > 2:
                     if int(row[688]) == 0:
                         # Users who answered at least one behavior form, but

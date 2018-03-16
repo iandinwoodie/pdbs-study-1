@@ -63,17 +63,18 @@ with open(bakfile, 'r') as fin:
             if not first_row:
                 user_hash = row[8]
                 status = [int(row[10]), int(row[145]), int(row[280]),
-                          int(row[415]), int(row[550]), int(row[688])
+                          int(row[415]), int(row[550]), int(row[684]),
+                          int(row[688])
                 ]
                 status_sum = sum(status)
                 dogs = [row[11], row[146], row[281], row[416], row[551]]
                 dogs = [x for x in dogs if x != '']
                 if user_hash in status_dict:
                     duplicate_cnt += 1
-                    if status[5] == 0:
+                    if status[6] == 0:
                         # Current entry is incomplete, discard it.
                         pass
-                    elif status_dict[user_hash][5] == 0:
+                    elif status_dict[user_hash][6] == 0:
                         # Existing entry is incomplete, replace it.
                         remove_previous = True
                         write_row = True

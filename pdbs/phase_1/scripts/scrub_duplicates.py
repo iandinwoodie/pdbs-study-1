@@ -40,26 +40,26 @@ if not os.path.isfile(infile):
     print('Error: entered file does not exist')
     quit()
 
-# Verify the output file.
+# Make a copy of the input file.
 base = os.path.splitext(os.path.basename(infile))[0]
 outfile = base + '.data'
-tempfile = ''
-if infile == outfile:
-    tempfile = outfile
-    outfile = outfile + '.temp'
+bakfile = base + '.bak'
+shutil.copy(infile, bakfile)
 
 # Parse the raw data with relevant filters.
 status_sum_dict = {}
-dupe_cnt = 0
 status_dict = {}
 data_dict = {}
 dog_dict = {}
-with open(infile, 'r') as fin:
+update_dict = {}
+duplicate_cnt = 0
+with open(bakfile, 'r') as fin:
     with open(outfile, 'w') as fout:
         writer = csv.writer(fout, delimiter=',', lineterminator='\n')
         first_row = True
         for row in csv.reader(fin, delimiter=','):
             write_row = False
+            remove_previous = False
             if not first_row:
                 user_hash = row[8]
                 status = [int(row[10]), int(row[145]), int(row[280]),
@@ -69,48 +69,74 @@ with open(infile, 'r') as fin:
                 dogs = [row[11], row[146], row[281], row[416], row[551]]
                 dogs = [x for x in dogs if x != '']
                 if user_hash in status_dict:
-                    dupe_cnt += 1
+                    duplicate_cnt += 1
                     if status[5] == 0:
-                        print('Duplicate found: updated entry is incomplete, '
-                              'discard updated')
+                        # Current entry is incomplete, discard it.
+                        pass
                     elif status_dict[user_hash][5] == 0:
-                        print('Duplicate found: existing entry is incomplete, '
-                              'save updated')
+                        # Existing entry is incomplete, replace it.
+                        remove_previous = True
                         write_row = True
                     else:
                         old_dogs = set(dog_dict[user_hash])
                         new_dogs = set(dogs)
                         if not bool(old_dogs.symmetric_difference(new_dogs)):
-                            print('Duplicate found: same set of dogs, ', end='')
                             if status_sum_dict[user_hash] <= status_sum:
-                                print('but more complete data, save updated')
+                                # Old entry for same list of dogs is less
+                                # complete, replace it.
+                                remove_previous = True
                                 write_row = True
-                            else:
-                                print('but less complete data, discard updated')
                         elif bool(new_dogs.intersection(old_dogs)):
-                            print('Duplicate found: at least one dog shared, ', end='')
                             if status_sum_dict[user_hash] <= status_sum:
-                                print('but more complete data, save updated')
+                                # Old entry shares at least one dog, but is
+                                # less complete, replace it.
+                                remove_previous = True
                                 write_row = True
-                            else:
-                                print('but less complete data, discard updated')
                         else:
-                            print('Duplicate found: no shared data, save both')
+                            # New entry is for different set of dogs, keep both.
+                            duplicate_cnt -= 1
                             write_row = True
                 else:
                     write_row = True
+                if write_row:
+                    data_dict[user_hash] = row
+                    status_dict[user_hash] = status
+                    dog_dict[user_hash] = dogs
+                    status_sum_dict[user_hash] = status_sum
+                    if remove_previous:
+                        update_dict[user_hash] = row[0]
+            else:
+                write_row = True
+                first_row = False
+            if write_row:
+                writer.writerow(row)
+
+# Replace the input file with the first round of filter data.
+shutil.copy(outfile, bakfile)
+
+# Loop back through file and remove all entries marked for removal.
+remaining_cnt = 0
+with open(bakfile, 'r') as fin:
+    with open(outfile, 'w') as fout:
+        writer = csv.writer(fout, delimiter=',', lineterminator='\n')
+        first_row = True
+        for row in csv.reader(fin, delimiter=','):
+            write_row = True
+            if not first_row:
+                user_hash = row[8]
+                if user_hash in update_dict:
+                    if update_dict[user_hash] != row[0]:
+                        write_row = False
+                if write_row:
+                    remaining_cnt += 1
             else:
                 first_row = False
             if write_row:
-                data_dict[user_hash] = row
-                status_dict[user_hash] = status
-                dog_dict[user_hash] = dogs
-                status_sum_dict[user_hash] = status_sum
                 writer.writerow(row)
 
-# If a temp file was used, move the results back to the requested destination.
-if not tempfile == '':
-    shutil.move(outfile, tempfile)
+# Delete copy of input file.
+os.remove(bakfile)
 
 # Let the user know the script has finished.
+print('Duplicates: %d, Remaining Entries: %d' %(duplicate_cnt, remaining_cnt))
 print('Duplicates scrubbing complete.')

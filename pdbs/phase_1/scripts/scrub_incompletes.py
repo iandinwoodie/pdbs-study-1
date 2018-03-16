@@ -11,13 +11,19 @@ Criteria for partial completeness:
     - incomplete feedback survey
 """
 
+import argparse
+import csv
 import os
 import shutil
-import csv
 
+
+# Parse the input file from the command-line arguments.
+parser = argparse.ArgumentParser(description='Scrub duplicates from raw data.')
+parser.add_argument('filename')
+args = parser.parse_args()
+infile = args.filename
 
 # Verify the file to be scrubbed.
-infile = str(input('Enter file to be scrubbed of incompletes: '))
 if not os.path.isfile(infile):
     print('Error: entered file does not exist')
     quit()

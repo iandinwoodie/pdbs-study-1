@@ -4,15 +4,21 @@ The file input will contained the hashed emails.
 A backup is created to preserve the original data.
 """
 
-import re
-import os
-import shutil
+import argparse
 import csv
 import hashlib
+import os
+import re
+import shutil
 
+
+# Parse the input file from the command-line arguments.
+parser = argparse.ArgumentParser(description='Replace emails with MD5 hashes.')
+parser.add_argument('filename')
+args = parser.parse_args()
+infile = args.filename
 
 # Verify the file to be scrubbed of emails.
-infile = str(input('Enter file to hash emails: '))
 if not os.path.isfile(infile):
     print('Error: entered file does not exist')
     quit()

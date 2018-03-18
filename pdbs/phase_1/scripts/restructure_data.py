@@ -6,6 +6,8 @@ import argparse
 import csv
 import os
 import shutil
+import yaml
+from collections import OrderedDict
 
 
 # Parse the input file from the command-line arguments and verify.
@@ -20,6 +22,7 @@ if not os.path.isfile(infile):
 # Create a structure from the raw data.
 header = {}
 data = {}
+kcount = 0
 with open(infile, 'r') as fin:
     is_header = True
     for row in csv.reader(fin, delimiter=','):
@@ -39,25 +42,35 @@ with open(infile, 'r') as fin:
             user = row[8]
             if not user in data:
                 data[user] = {}
-                data[user]['welcome'] = {}
+                data[user]['welcome'] = OrderedDict()
                 for i in range(0, 11):
                     data[user]['welcome'][header['welcome'][i]] = row[i]
-                data[user]['feedback'] = {}
+                data[user]['feedback'] = OrderedDict()
                 for i in range(0, 4):
-                    data[user]['feedback'][header['feedback'][i]] = row[i]
-            #if user_hash in record_dict:
-            #    dog_cnt = len(record_dict[user_hash]['dogs'])
-            #else:
-            #    dog_cnt = 0
-            #    record_dict[user_hash] = {}
-            #    record_dict[user_hash]['demo'] = row[0:11]
-            #    record_dict[user_hash]['feed'] = row[685:689]
-            #    record_dict[user_hash]['status'] = []
-            #    record_dict[user_hash]['dogs'] = []
+                    data[user]['feedback'][header['feedback'][i]] = row[i+685]
+                data[user]['dogs'] = {}
+            status_cols = [145, 280, 415, 550, 684]
+            for index, col in enumerate(status_cols):
+                offset = index * 135
+                if row[col] == '2':
+                    name = row[11+offset]
+                    data[user]['dogs'][name] = OrderedDict()
+                    for i in range(0, 133):
+                        data[user]['dogs'][name][header['survey'][i]] = row[11+offset]
+                    kcount += 1
+            if kcount > 2500:
+                break
+
+
+
+
             #status = [row[145], row[280], row[415], row[550], row[684]]
             #record_dict[user_hash]['status'] += status
             #dogs = []
             #if status[0] == '2':
             #    dogs.append(row[11:145])
             #record_dict[user_hash]['dogs'] += dogs
-print(data[user]['welcome'])
+represent_dict_order = lambda self, data: self.represent_mapping('tag:yaml.org,2002:map', data.items())
+yaml.add_representer(OrderedDict, represent_dict_order)
+with open('output.yml', 'w') as outfile:
+    yaml.dump(data, outfile, default_flow_style=False)

@@ -22,7 +22,6 @@ if not os.path.isfile(infile):
 # Create a structure from the raw data.
 header = {}
 data = {}
-kcount = 0
 with open(infile, 'r') as fin:
     is_header = True
     for row in csv.reader(fin, delimiter=','):
@@ -41,7 +40,7 @@ with open(infile, 'r') as fin:
         else:
             user = row[8]
             if not user in data:
-                data[user] = {}
+                data[user] = OrderedDict()
                 data[user]['welcome'] = OrderedDict()
                 for i in range(0, 11):
                     data[user]['welcome'][header['welcome'][i]] = row[i]
@@ -56,21 +55,10 @@ with open(infile, 'r') as fin:
                     name = row[11+offset]
                     data[user]['dogs'][name] = OrderedDict()
                     for i in range(0, 133):
-                        data[user]['dogs'][name][header['survey'][i]] = row[11+offset]
-                    kcount += 1
-            if kcount > 2500:
-                break
+                        cur_col = 11 + offset + i
+                        data[user]['dogs'][name][header['survey'][i]] = row[cur_col]
 
-
-
-
-            #status = [row[145], row[280], row[415], row[550], row[684]]
-            #record_dict[user_hash]['status'] += status
-            #dogs = []
-            #if status[0] == '2':
-            #    dogs.append(row[11:145])
-            #record_dict[user_hash]['dogs'] += dogs
 represent_dict_order = lambda self, data: self.represent_mapping('tag:yaml.org,2002:map', data.items())
 yaml.add_representer(OrderedDict, represent_dict_order)
-with open('output.yml', 'w') as outfile:
+with open('restructured_data.yml', 'w') as outfile:
     yaml.dump(data, outfile, default_flow_style=False)

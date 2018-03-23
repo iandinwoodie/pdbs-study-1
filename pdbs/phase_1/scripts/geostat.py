@@ -96,7 +96,6 @@ def fetch_postal_info(postal_dict):
                     with urllib.request.urlopen(cur_url) as response:
                         data = json.loads(response.read())
                         if 'country' in data:
-                            print('user %d - %s' %(hash_cnt, data['country']))
                             info_found = True
                             cur_country = data['country']
                             break

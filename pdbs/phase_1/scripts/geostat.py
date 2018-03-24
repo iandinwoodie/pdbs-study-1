@@ -1,12 +1,17 @@
+"""
+Compute the pdbs phase 1 geo-stats
+"""
+
 import csv
 import urllib.request
 import json
 import re
+import argparse
 
 
-def extract_postal_data():
+def extract_postal_data(infile):
     """Extracts relevant data points from the raw data."""
-    with open('pdbs_phase_1_raw.csv', 'r') as fin, open('geostat_data.csv', 'w') as fout:
+    with open(infile, 'r') as fin, open('geostat_data.csv', 'w') as fout:
         writer = csv.writer(fout, delimiter=',', lineterminator='\n')
         first_row = True
         for row in csv.reader(fin, delimiter=','):
@@ -112,17 +117,14 @@ def fetch_postal_info(postal_dict):
     return country_dict
 
 
-def print_line():
-    print('-'*80)
-
-
 def main():
-    print_line()
-    extract_postal_data()
+    parser = argparse.ArgumentParser(description='Compute the pdbs phase 1 geo-stats')
+    parser.add_argument('filename')
+    args = parser.parse_args()
+    infile = args.filename
+    extract_postal_data(infile)
     postal_dict = create_postal_dictionary()
-    print_line()
     print(fetch_postal_info(postal_dict))
-    print_line()
 
 
 if __name__ == "__main__":

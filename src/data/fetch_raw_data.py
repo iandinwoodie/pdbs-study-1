@@ -38,7 +38,6 @@ def main():
                         hashes[col] = m.hexdigest()
                     row[index] = hashes[col]
             writer.writerow(row)
-        fout.write('test')
 
 
 if __name__ == "__main__":

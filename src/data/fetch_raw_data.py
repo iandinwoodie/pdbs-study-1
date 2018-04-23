@@ -21,16 +21,21 @@ def main():
     data = response.text.splitlines()
 
     logger.info('saving data to file')
-    with open('raw.csv', 'w') as fout:
+    outfile = os.path.join(project_dir, 'data', 'raw', 'raw.csv')
+    with open(outfile, 'w') as fout:
         writer = csv.writer(fout)
         reader = csv.reader(data)
         for row in reader:
             writer.writerow(row)
+        fout.write('test')
 
 
 if __name__ == "__main__":
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+    # store the project dir as a variable
+    project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
 
     # find .env automagically by walking up directories until it's found, then
     # load up the .env entries as environment variables

@@ -1,8 +1,10 @@
 from dotenv import find_dotenv, load_dotenv
 from requests import post
 import csv
+import hashlib
 import logging
 import os
+import re
 
 
 def main():
@@ -20,12 +22,21 @@ def main():
     response = post(database_url, data=payload)
     data = response.text.splitlines()
 
-    logger.info('saving data to file')
+    logger.info('hashing emails and saving data')
+    hashes = {}
+    m = hashlib.md5()
+    pattern = r'.*@.*\.[a-z]*'
     outfile = os.path.join(project_dir, 'data', 'raw', 'raw.csv')
     with open(outfile, 'w') as fout:
         writer = csv.writer(fout)
         reader = csv.reader(data)
         for row in reader:
+            for index, col in enumerate(row):
+                if col != '' and re.match(pattern, col):
+                    if not col in hashes:
+                        m.update(col.encode('utf-8'))
+                        hashes[col] = m.hexdigest()
+                    row[index] = hashes[col]
             writer.writerow(row)
         fout.write('test')
 

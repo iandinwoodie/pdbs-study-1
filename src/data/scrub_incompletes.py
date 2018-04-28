@@ -35,6 +35,8 @@ def main():
         - at least one complete dog-specific survey
         - incomplete feedback survey
     """
+    logger = logging.getLogger(__name__)
+
     # Determine the input and output files.
     infile = get_data_file()
 
@@ -44,6 +46,7 @@ def main():
         'complete': 0,
         'incomplete': 0
         }
+    logger.info('scrubbing incomplete results')
     with get_temp_file() as temp:
         with open(infile, 'r') as fin:
             writer = csv.writer(temp, delimiter=',', lineterminator='\n')
@@ -67,11 +70,10 @@ def main():
                 else:
                     first_row = False
                 writer.writerow(row)
+        print('partial: %d, complete: %d, incomplete: %d'
+              %(counts['partial'], counts['complete'], counts['incomplete']))
+        logger.info('saving scrubbed data file')
         shutil.copy2(temp.name, interim_path)
-
-    # Let the user know the script has finished.
-    print('Partial: %d, Complete: %d, Incomplete: %d'
-          %(counts['partial'], counts['complete'], counts['incomplete']))
 
 
 if __name__ == "__main__":
@@ -79,8 +81,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     # store necessary paths
-    project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir,
-                               os.pardir)
+    project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     interim_dir = os.path.join(project_dir, 'data', 'interim')
     interim_path = os.path.join(interim_dir, 'interim.csv')
     raw_path = os.path.join(project_dir, 'data', 'raw', 'raw.csv')

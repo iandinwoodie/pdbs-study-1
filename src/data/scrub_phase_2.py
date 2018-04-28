@@ -26,16 +26,29 @@ def main():
     """
     Scrub Phase 2 results from the raw data.
     """
+    logger = logging.getLogger(__name__)
+
     # Determine the input and output files.
     infile = get_data_file()
 
     # Scrub the Phase 2 results.
+    counts = {
+        'phase_1': 0,
+        'phase_2': 0
+        }
+    logger.info('scrubbing phase 2 results')
     with get_temp_file() as temp:
         with open(infile, 'r') as fin:
             writer = csv.writer(temp, delimiter=',', lineterminator='\n')
             for row in csv.reader(fin, delimiter=','):
                 if row[1] != 'event_2_arm_1':
                     writer.writerow(row)
+                    counts['phase_1'] += 1
+                else:
+                    counts['phase_2'] += 1
+        print('phase 1: %d, phase 2: %d'
+              %(counts['phase_1'], counts['phase_2']))
+        logger.info('saving scrubbed data file')
         shutil.copy2(temp.name, interim_path)
 
 

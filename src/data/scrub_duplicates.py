@@ -1,143 +1,165 @@
-"""
-Scrubs duplicates from raw data.
-
-Criteria to update existing response:
-    - The updated response must not replace a complete entry for a specific dog
-      with an incomplete entry.
-    - The updated response must not replace a complete entry for a specific dog
-      with an entry for a different dog.
-    - The updated response must not detract from the existing data of a complete
-      entry for a specific dog.
-
-Criteria to dispose subsequent response:
-    - The updated response replaces a complete entry for a specific dog with an
-      incomplete entry.
-    - The updated response replaces a complete entry for a specific dog with an
-      entry for a different dog.
-    - The updated response detracts from the existing data of a complete entry
-      for a specific dog.
-
-Criteria to keep existing and subsequent responses:
-    - Both the existing and updated responses contain complete dog-specific
-      entries.
-    - No complete entry for the same specific dog is shared in both responses.
-"""
-
-import argparse
 import csv
+import logging
 import os
+import re
 import shutil
+import tempfile
 
 
-# Parse the input file from the command-line arguments.
-parser = argparse.ArgumentParser(description='Scrub duplicates from raw data.')
-parser.add_argument('filename')
-args = parser.parse_args()
-infile = args.filename
+def get_data_file():
+    """Determine the data file to be scrubbed."""
+    if os.path.isfile(interim_path):
+        return interim_path
+    elif os.path.isfile(raw_path):
+        return raw_path
+    else:
+        print('Error: no scrubbable data file exists.')
+        quit()
 
-# Verify the file to be scrubbed.
-if not os.path.isfile(infile):
-    print('Error: entered file does not exist')
-    quit()
 
-# Make a copy of the input file.
-base = os.path.splitext(os.path.basename(infile))[0]
-outfile = base + '.data'
-bakfile = base + '.bak'
-shutil.copy(infile, bakfile)
+def get_temp_file():
+    """Generate a temporary output file."""
+    return tempfile.NamedTemporaryFile(mode='w', dir=interim_dir, delete=True)
 
-# Parse the raw data with relevant filters.
-status_sum_dict = {}
-status_dict = {}
-data_dict = {}
-dog_dict = {}
-update_dict = {}
-duplicate_cnt = 0
-with open(bakfile, 'r') as fin:
-    with open(outfile, 'w') as fout:
-        writer = csv.writer(fout, delimiter=',', lineterminator='\n')
-        first_row = True
+
+class Response(object):
+
+    def __init__(self, row):
+        """Initializes Response object for a given row."""
+        self.uid = int(row[0])
+        self.hash = row[8]
+        self.status = self.get_statuses(row)
+        self.status_sum = sum(self.status)
+        self.dogs = self.get_dogs(row)
+
+    def get_statuses(self, row):
+        """Generate a list of survey statuses for a given row."""
+        status_list = [int(row[10]), int(row[145]), int(row[280]),
+                       int(row[415]), int(row[550]), int(row[684]),
+                       int(row[688])
+        ]
+        return status_list
+
+    def get_dogs(self, row):
+        """Generate a list of dogs for a given row."""
+        dog_list = [row[11], row[146], row[281], row[416], row[551]]
+        dog_list = [x for x in dog_list if x != '']
+        return set(dog_list)
+
+
+def get_response_log(infile):
+    """Generate a dictionary of user hashes with duplicate entries."""
+    response_log = {}
+    with open(infile, 'r') as fin:
         for row in csv.reader(fin, delimiter=','):
-            write_row = False
-            remove_previous = False
-            if not first_row:
-                user_hash = row[8]
-                status = [int(row[10]), int(row[145]), int(row[280]),
-                          int(row[415]), int(row[550]), int(row[684]),
-                          int(row[688])
-                ]
-                status_sum = sum(status)
-                dogs = [row[11], row[146], row[281], row[416], row[551]]
-                dogs = [x for x in dogs if x != '']
-                if user_hash in status_dict:
-                    duplicate_cnt += 1
-                    if status[6] == 0:
-                        # Current entry is incomplete, discard it.
-                        pass
-                    elif status_dict[user_hash][6] == 0:
-                        # Existing entry is incomplete, replace it.
-                        remove_previous = True
-                        write_row = True
+            if row[0] != 'record_id':
+                # Fetch the relevant information from the entry row.
+                entry = Response(row)
+                response_log[entry.hash] = {}
+                response_log[entry.hash][entry.uid] = {}
+                response_log[entry.hash][entry.uid]['entry'] = entry
+                response_log[entry.hash][entry.uid]['remove'] = False
+                if len(response_log[entry.hash]) > 1:
+                    if entry.status[6] == 0:
+                        # Mark the current entry if it is incomplete.
+                        response_log[entry.hash][entry.uid]['remove'] = True
                     else:
-                        old_dogs = set(dog_dict[user_hash])
-                        new_dogs = set(dogs)
-                        if not bool(old_dogs.symmetric_difference(new_dogs)):
-                            if status_sum_dict[user_hash] <= status_sum:
-                                # Old entry for same list of dogs is less
-                                # complete, replace it.
-                                remove_previous = True
-                                write_row = True
-                        elif bool(new_dogs.intersection(old_dogs)):
-                            if status_sum_dict[user_hash] <= status_sum:
-                                # Old entry shares at least one dog, but is
-                                # less complete, replace it.
-                                remove_previous = True
-                                write_row = True
-                        else:
-                            # New entry is for different set of dogs, keep both.
-                            duplicate_cnt -= 1
-                            write_row = True
-                else:
-                    write_row = True
-                if write_row:
-                    data_dict[user_hash] = row
-                    status_dict[user_hash] = status
-                    dog_dict[user_hash] = dogs
-                    status_sum_dict[user_hash] = status_sum
-                    if remove_previous:
-                        update_dict[user_hash] = row[0]
-            else:
-                write_row = True
-                first_row = False
-            if write_row:
-                writer.writerow(row)
+                        # Loop through existing entries.
+                        for uid in response_log[entry.hash].items():
+                            # Do not compare the current entry with itself.
+                            if uid != entry.uid:
+                                past_entry = response_log[entry.hash][uid]['entry']
+                                if past_entry.status[6] == 0:
+                                    # Mark the past entry if it was incomplete.
+                                    response_log[entry.hash][uid]['remove'] = True
+                                else:
+                                    pdogs = past_entry.dogs
+                                    cdogs = entry.dogs
+                                    if not bool(pdogs.symmetric_difference(cdogs)):
+                                        if past_entry.status_sum <= entry.status_sum:
+                                            # Old entry for same list of dogs is less
+                                            # complete, mark it.
+                                            response_log[entry.hash][uid]['remove'] = True
+                                    elif bool(cdogs.intersection(pdogs)):
+                                        if status_sum_dict[user_hash] <= status_sum:
+                                            # Old entry shares at least one dog, but is
+                                            # less complete, mark it.
+                                            response_log[entry.hash][uid]['remove'] = True
+    return response_log
 
-# Replace the input file with the first round of filter data.
-shutil.copy(outfile, bakfile)
 
-# Loop back through file and remove all entries marked for removal.
-remaining_cnt = 0
-with open(bakfile, 'r') as fin:
-    with open(outfile, 'w') as fout:
-        writer = csv.writer(fout, delimiter=',', lineterminator='\n')
-        first_row = True
-        for row in csv.reader(fin, delimiter=','):
-            write_row = True
-            if not first_row:
-                user_hash = row[8]
-                if user_hash in update_dict:
-                    if update_dict[user_hash] != row[0]:
-                        write_row = False
-                if write_row:
-                    remaining_cnt += 1
-            else:
-                first_row = False
-            if write_row:
-                writer.writerow(row)
+def main():
+    """
+    Scrubs duplicates from raw data.
 
-# Delete copy of input file.
-os.remove(bakfile)
+    Criteria to update existing response:
+        - The updated response must not replace a complete entry for a specific dog
+          with an incomplete entry.
+        - The updated response must not replace a complete entry for a specific dog
+          with an entry for a different dog.
+        - The updated response must not detract from the existing data of a complete
+          entry for a specific dog.
 
-# Let the user know the script has finished.
-print('Duplicates: %d, Remaining Entries: %d' %(duplicate_cnt, remaining_cnt))
-print('Duplicates scrubbing complete.')
+    Criteria to dispose subsequent response:
+        - The updated response replaces a complete entry for a specific dog with an
+          incomplete entry.
+        - The updated response replaces a complete entry for a specific dog with an
+          entry for a different dog.
+        - The updated response detracts from the existing data of a complete entry
+          for a specific dog.
+
+    Criteria to keep existing and subsequent responses:
+        - Both the existing and updated responses contain complete dog-specific
+          entries.
+        - No complete entry for the same specific dog is shared in both responses.
+    """
+    logger = logging.getLogger(__name__)
+
+    # Determine the input and output files.
+    infile = get_data_file()
+
+    # Get response log.
+    logger.info('generating response log')
+    response_log = get_response_log(infile)
+
+    # Scrub Phase 1 duplicate responses.
+    counts = {
+        'original': 0,
+        'duplicate': 0
+        }
+    logger.info('scrubbing duplicate results')
+    cnt = 0
+    with get_temp_file() as temp:
+        with open(infile, 'r') as fin:
+            writer = csv.writer(temp, delimiter=',', lineterminator='\n')
+            for row in csv.reader(fin, delimiter=','):
+                if row[0] != 'record_id':
+                    uhash = row[8]
+                    uid = row[0]
+                    #ustatus = response_log[uhash][uid]['remove'
+                    #print(response_log[row[8]][row[0]]['remove'])
+                    print(response_log[uhash])
+                    cnt += 1
+                if cnt > 25:
+                    break
+                    #if response_log[row[8]][row[0]]['remove'] == False:
+                    #    writer.writerow(row)
+                    #    counts['original'] += 1
+                    #else:
+                    #    counts['duplicate'] += 1
+        print('originals: %d, duplicates: %d'
+              %(counts['original'], counts['duplicate']))
+        logger.info('discarding temp data file')
+
+
+if __name__ == "__main__":
+    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+    # store necessary paths
+    project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
+    interim_dir = os.path.join(project_dir, 'data', 'interim')
+    interim_path = os.path.join(interim_dir, 'interim.csv')
+    raw_path = os.path.join(project_dir, 'data', 'raw', 'raw.csv')
+
+    main()

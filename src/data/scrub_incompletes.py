@@ -40,7 +40,7 @@ def main():
     # Determine the input and output files.
     infile = get_data_file()
 
-    # Parse the raw data with relevant filters.
+    # Scrub incomplete Phase 1 results.
     counts = {
         'partial': 0,
         'complete': 0,

@@ -1,71 +1,88 @@
-"""
-Scrubs incompletes from raw data.
-
-Criteria for incompleteness:
-    - incomplete welcome survey
-    - less than one complete dog-specific survey
-
-Criteria for partial completeness:
-    - complete welcome survey
-    - at least one complete dog-specific survey
-    - incomplete feedback survey
-"""
-
-import argparse
 import csv
+import logging
 import os
+import re
 import shutil
+import tempfile
 
 
-# Parse the input file from the command-line arguments.
-parser = argparse.ArgumentParser(description='Scrub duplicates from raw data.')
-parser.add_argument('filename')
-args = parser.parse_args()
-infile = args.filename
+def get_data_file():
+    """Determine the data file to be scrubbed."""
+    if os.path.isfile(interim_path):
+        return interim_path
+    elif os.path.isfile(raw_path):
+        return raw_path
+    else:
+        print('Error: no scrubbable data file exists.')
+        quit()
 
-# Verify the file to be scrubbed.
-if not os.path.isfile(infile):
-    print('Error: entered file does not exist')
-    quit()
 
-# Make a copy of the input file.
-base = os.path.splitext(os.path.basename(infile))[0]
-outfile = base + '.data'
-bakfile = base + '.bak'
-shutil.copy(infile, bakfile)
+def get_temp_file():
+    """Generate a temporary output file."""
+    return tempfile.NamedTemporaryFile(mode='w', dir=interim_dir, delete=True)
 
-# Parse the raw data with relevant filters.
-partial_cnt = 0
-complete_cnt = 0
-incomplete_cnt = 0
-with open(bakfile, 'r') as fin:
-    with open(outfile, 'w') as fout:
-        writer = csv.writer(fout, delimiter=',', lineterminator='\n')
-        first_row = True
-        for row in csv.reader(fin, delimiter=','):
-            if not first_row:
-                status_sum = (int(row[10]) + int(row[145]) + int(row[280])
-                              + int(row[415]) + int(row[550]) + int(row[684]))
-                if status_sum > 2:
-                    if int(row[688]) == 0:
-                        # Users who answered at least one behavior form, but
-                        # terminated the survey before the last form.
-                        partial_cnt += 1
+
+def main():
+    """
+    Scrub incomplete records from the raw data.
+
+    Criteria for incompleteness:
+        - incomplete welcome survey
+        - less than one complete dog-specific survey
+
+    Criteria for partial completeness:
+        - complete welcome survey
+        - at least one complete dog-specific survey
+        - incomplete feedback survey
+    """
+    # Determine the input and output files.
+    infile = get_data_file()
+
+    # Parse the raw data with relevant filters.
+    counts = {
+        'partial': 0,
+        'complete': 0,
+        'incomplete': 0
+        }
+    with get_temp_file() as temp:
+        with open(infile, 'r') as fin:
+            writer = csv.writer(temp, delimiter=',', lineterminator='\n')
+            first_row = True
+            for row in csv.reader(fin, delimiter=','):
+                if not first_row:
+                    status_sum = (int(row[10]) + int(row[145]) + int(row[280])
+                                  + int(row[415]) + int(row[550]) + int(row[684]))
+                    if status_sum > 2:
+                        if int(row[688]) == 0:
+                            # Users who answered at least one behavior form, but
+                            # terminated the survey before the last form.
+                            counts['partial'] += 1
+                        else:
+                            # Users who answered the survey through the last form.
+                            counts['complete'] += 1
                     else:
-                        # Users who answered the survey through the last form.
-                        complete_cnt += 1
+                        # Users who did not answer at least one behavior form.
+                        counts['incomplete'] += 1
+                        continue
                 else:
-                    # Users who did not answer at least one behavior form.
-                    incomplete_cnt += 1
-                    continue
-            else:
-                first_row = False
-            writer.writerow(row)
+                    first_row = False
+                writer.writerow(row)
+        shutil.copy2(temp.name, interim_path)
 
-# Delete copy of input file.
-os.remove(bakfile)
+    # Let the user know the script has finished.
+    print('Partial: %d, Complete: %d, Incomplete: %d'
+          %(counts['partial'], counts['complete'], counts['incomplete']))
 
-# Let the user know the script has finished.
-print('Partial: %d, Complete: %d, Incomplete: %d'
-      %(partial_cnt, complete_cnt, incomplete_cnt))
-print('Incompletes scrubbing complete.')
+
+if __name__ == "__main__":
+    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+    # store necessary paths
+    project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir,
+                               os.pardir)
+    interim_dir = os.path.join(project_dir, 'data', 'interim')
+    interim_path = os.path.join(interim_dir, 'interim.csv')
+    raw_path = os.path.join(project_dir, 'data', 'raw', 'raw.csv')
+
+    main()

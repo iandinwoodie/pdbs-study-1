@@ -66,28 +66,15 @@ def get_response_log(infile):
                 # Fetch the relevant information from the entry row.
                 response = Response(row)
                 log = add_response_to_log(log, response)
-
-    count = 0
     for user, responses in log.items():
         if len(responses) > 1:
-            print('')
-            print('USER: %s' %user)
             combos = list(map(dict, combinations(responses.items(), 2)))
             for combo in combos:
                 r1 = combo[list(combo)[0]]['response']
                 r2 = combo[list(combo)[1]]['response']
-                if not bool(r1.dogs.symmetric_difference(r2.dogs)):
-                    # Same list of dogs.
-                    print('same')
-                    if r1.status_sum > r2.status_sum:
-                        combo[list(combo)[1]]['remove'] = True
-                    elif r1.status_sum < r2.status_sum:
-                        combo[list(combo)[0]]['remove'] = True
-                    else:
-                        combo[list(combo)[1]]['remove'] = True
-                elif bool(r1.dogs.intersection(r2.dogs)):
-                    # Share at least on dog.
-                    print('shared')
+                if (not bool(r1.dogs.symmetric_difference(r2.dogs)) or
+                    bool(r1.dogs.intersection(r2.dogs))):
+                    # Same or shared list of dogs.
                     if r1.status_sum > r2.status_sum:
                         combo[list(combo)[1]]['remove'] = True
                     elif r1.status_sum < r2.status_sum:
@@ -96,40 +83,7 @@ def get_response_log(infile):
                         combo[list(combo)[1]]['remove'] = True
                 else:
                     # Different list of dogs.
-                    print('different')
-                print('dogs: %s, statuses: %s, sum: %d, remove: %r'
-                      %(r1.dogs, r1.status, r1.status_sum, combo[list(combo)[0]]['remove']))
-                print('dogs: %s, statuses: %s, sum: %d, remove: %r'
-                      %(r2.dogs, r2.status, r2.status_sum, combo[list(combo)[1]]['remove']))
-            print(responses)
-
-                #    if entry.status[6] == 0:
-                #        # Mark the current entry if it is incomplete.
-                #        rlog[entry.hash][entry.uid]['remove'] = True
-                #    else:
-                #        # Loop through existing entries.
-                #        for key, value in rlog[entry.hash].items():
-                #            # Do not compare the current entry with itself.
-                #            if key != entry.uid:
-                #                past_entry = rlog[entry.hash][key]['entry']
-                #                if past_entry.status[6] == 0:
-                #                    # Mark the past entry if it was incomplete.
-                #                    rlog[entry.hash][key]['remove'] = True
-                #                else:
-                #                    pdogs = past_entry.dogs
-                #                    cdogs = entry.dogs
-                #                    if not bool(pdogs.symmetric_difference(cdogs)):
-                #                        if past_entry.status_sum <= entry.status_sum:
-                #                            # Old entry for same list of dogs is less
-                #                            # complete, mark it.
-                #                            rlog[entry.hash][key]['remove'] = True
-                #                    elif bool(cdogs.intersection(pdogs)):
-                #                        if past_entry.status_sum <= entry.status_sum:
-                #                            # Old entry shares at least one dog, but is
-                #                            # less complete, mark it.
-                #                            rlog[entry.hash][key]['remove'] = True
-                #                    else:
-                #                        rlog[entry.hash][entry.uid]['remove'] = True
+                    pass
     return log
 
 
@@ -185,7 +139,8 @@ def main():
                         counts['original'] += 1
         print('originals: %d, duplicates: %d'
               %(counts['original'], counts['duplicate']))
-        logger.info('discarding temp data file')
+        logger.info('saving scrubbed data file')
+        shutil.copy2(temp.name, interim_path)
 
 
 if __name__ == "__main__":

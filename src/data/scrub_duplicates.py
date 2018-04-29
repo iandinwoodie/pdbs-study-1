@@ -55,7 +55,8 @@ def get_response_log(infile):
             if row[0] != 'record_id':
                 # Fetch the relevant information from the entry row.
                 entry = Response(row)
-                response_log[entry.hash] = {}
+                if entry.hash not in response_log:
+                    response_log[entry.hash] = {}
                 response_log[entry.hash][entry.uid] = {}
                 response_log[entry.hash][entry.uid]['entry'] = entry
                 response_log[entry.hash][entry.uid]['remove'] = False
@@ -65,13 +66,13 @@ def get_response_log(infile):
                         response_log[entry.hash][entry.uid]['remove'] = True
                     else:
                         # Loop through existing entries.
-                        for uid in response_log[entry.hash].items():
+                        for key, value in response_log[entry.hash].items():
                             # Do not compare the current entry with itself.
-                            if uid != entry.uid:
-                                past_entry = response_log[entry.hash][uid]['entry']
+                            if key != entry.uid:
+                                past_entry = response_log[entry.hash][key]['entry']
                                 if past_entry.status[6] == 0:
                                     # Mark the past entry if it was incomplete.
-                                    response_log[entry.hash][uid]['remove'] = True
+                                    response_log[entry.hash][key]['remove'] = True
                                 else:
                                     pdogs = past_entry.dogs
                                     cdogs = entry.dogs
@@ -79,12 +80,15 @@ def get_response_log(infile):
                                         if past_entry.status_sum <= entry.status_sum:
                                             # Old entry for same list of dogs is less
                                             # complete, mark it.
-                                            response_log[entry.hash][uid]['remove'] = True
+                                            response_log[entry.hash][key]['remove'] = True
                                     elif bool(cdogs.intersection(pdogs)):
-                                        if status_sum_dict[user_hash] <= status_sum:
+                                        if past_entry.status_sum <= entry.status_sum:
                                             # Old entry shares at least one dog, but is
                                             # less complete, mark it.
-                                            response_log[entry.hash][uid]['remove'] = True
+                                            response_log[entry.hash][key]['remove'] = True
+                                    else:
+                                        response_log[entry.hash][entry.uid]['remove'] = True
+
     return response_log
 
 
@@ -134,19 +138,11 @@ def main():
             writer = csv.writer(temp, delimiter=',', lineterminator='\n')
             for row in csv.reader(fin, delimiter=','):
                 if row[0] != 'record_id':
-                    uhash = row[8]
-                    uid = row[0]
-                    #ustatus = response_log[uhash][uid]['remove'
-                    #print(response_log[row[8]][row[0]]['remove'])
-                    print(response_log[uhash])
-                    cnt += 1
-                if cnt > 25:
-                    break
-                    #if response_log[row[8]][row[0]]['remove'] == False:
-                    #    writer.writerow(row)
-                    #    counts['original'] += 1
-                    #else:
-                    #    counts['duplicate'] += 1
+                    if response_log[row[8]][int(row[0])]['remove']:
+                        counts['duplicate'] += 1
+                    else:
+                        writer.writerow(row)
+                        counts['original'] += 1
         print('originals: %d, duplicates: %d'
               %(counts['original'], counts['duplicate']))
         logger.info('discarding temp data file')

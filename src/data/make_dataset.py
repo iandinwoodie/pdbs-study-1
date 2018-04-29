@@ -9,7 +9,9 @@ import tempfile
 
 def get_data_file():
     """Determine the data file to be scrubbed."""
-    if os.path.isfile(interim_path):
+    if os.path.isfile(processed_path):
+        return processed_path
+    elif os.path.isfile(interim_path):
         return interim_path
     elif os.path.isfile(raw_path):
         return raw_path

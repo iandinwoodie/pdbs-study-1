@@ -1,3 +1,4 @@
+from itertools import combinations
 import csv
 import logging
 import os
@@ -47,49 +48,89 @@ class Response(object):
         return set(dog_list)
 
 
+def add_response_to_log(log, response):
+    """Add a response to the response log."""
+    if response.hash not in log:
+        log[response.hash] = {}
+    log[response.hash][response.uid] = {}
+    log[response.hash][response.uid]['response'] = response
+    log[response.hash][response.uid]['remove'] = False
+    return log
+
 def get_response_log(infile):
     """Generate a dictionary of user hashes with duplicate entries."""
-    response_log = {}
+    log = {}
     with open(infile, 'r') as fin:
         for row in csv.reader(fin, delimiter=','):
             if row[0] != 'record_id':
                 # Fetch the relevant information from the entry row.
-                entry = Response(row)
-                if entry.hash not in response_log:
-                    response_log[entry.hash] = {}
-                response_log[entry.hash][entry.uid] = {}
-                response_log[entry.hash][entry.uid]['entry'] = entry
-                response_log[entry.hash][entry.uid]['remove'] = False
-                if len(response_log[entry.hash]) > 1:
-                    if entry.status[6] == 0:
-                        # Mark the current entry if it is incomplete.
-                        response_log[entry.hash][entry.uid]['remove'] = True
-                    else:
-                        # Loop through existing entries.
-                        for key, value in response_log[entry.hash].items():
-                            # Do not compare the current entry with itself.
-                            if key != entry.uid:
-                                past_entry = response_log[entry.hash][key]['entry']
-                                if past_entry.status[6] == 0:
-                                    # Mark the past entry if it was incomplete.
-                                    response_log[entry.hash][key]['remove'] = True
-                                else:
-                                    pdogs = past_entry.dogs
-                                    cdogs = entry.dogs
-                                    if not bool(pdogs.symmetric_difference(cdogs)):
-                                        if past_entry.status_sum <= entry.status_sum:
-                                            # Old entry for same list of dogs is less
-                                            # complete, mark it.
-                                            response_log[entry.hash][key]['remove'] = True
-                                    elif bool(cdogs.intersection(pdogs)):
-                                        if past_entry.status_sum <= entry.status_sum:
-                                            # Old entry shares at least one dog, but is
-                                            # less complete, mark it.
-                                            response_log[entry.hash][key]['remove'] = True
-                                    else:
-                                        response_log[entry.hash][entry.uid]['remove'] = True
+                response = Response(row)
+                log = add_response_to_log(log, response)
 
-    return response_log
+    count = 0
+    for user, responses in log.items():
+        if len(responses) > 1:
+            print('')
+            print('USER: %s' %user)
+            combos = list(map(dict, combinations(responses.items(), 2)))
+            for combo in combos:
+                r1 = combo[list(combo)[0]]['response']
+                r2 = combo[list(combo)[1]]['response']
+                if not bool(r1.dogs.symmetric_difference(r2.dogs)):
+                    # Same list of dogs.
+                    print('same')
+                    if r1.status_sum > r2.status_sum:
+                        combo[list(combo)[1]]['remove'] = True
+                    elif r1.status_sum < r2.status_sum:
+                        combo[list(combo)[0]]['remove'] = True
+                    else:
+                        combo[list(combo)[1]]['remove'] = True
+                elif bool(r1.dogs.intersection(r2.dogs)):
+                    # Share at least on dog.
+                    print('shared')
+                    if r1.status_sum > r2.status_sum:
+                        combo[list(combo)[1]]['remove'] = True
+                    elif r1.status_sum < r2.status_sum:
+                        combo[list(combo)[0]]['remove'] = True
+                    else:
+                        combo[list(combo)[1]]['remove'] = True
+                else:
+                    # Different list of dogs.
+                    print('different')
+                print('dogs: %s, statuses: %s, sum: %d, remove: %r'
+                      %(r1.dogs, r1.status, r1.status_sum, combo[list(combo)[0]]['remove']))
+                print('dogs: %s, statuses: %s, sum: %d, remove: %r'
+                      %(r2.dogs, r2.status, r2.status_sum, combo[list(combo)[1]]['remove']))
+            print(responses)
+
+                #    if entry.status[6] == 0:
+                #        # Mark the current entry if it is incomplete.
+                #        rlog[entry.hash][entry.uid]['remove'] = True
+                #    else:
+                #        # Loop through existing entries.
+                #        for key, value in rlog[entry.hash].items():
+                #            # Do not compare the current entry with itself.
+                #            if key != entry.uid:
+                #                past_entry = rlog[entry.hash][key]['entry']
+                #                if past_entry.status[6] == 0:
+                #                    # Mark the past entry if it was incomplete.
+                #                    rlog[entry.hash][key]['remove'] = True
+                #                else:
+                #                    pdogs = past_entry.dogs
+                #                    cdogs = entry.dogs
+                #                    if not bool(pdogs.symmetric_difference(cdogs)):
+                #                        if past_entry.status_sum <= entry.status_sum:
+                #                            # Old entry for same list of dogs is less
+                #                            # complete, mark it.
+                #                            rlog[entry.hash][key]['remove'] = True
+                #                    elif bool(cdogs.intersection(pdogs)):
+                #                        if past_entry.status_sum <= entry.status_sum:
+                #                            # Old entry shares at least one dog, but is
+                #                            # less complete, mark it.
+                #                            rlog[entry.hash][key]['remove'] = True
+                #                    else:
+                #                        rlog[entry.hash][entry.uid]['remove'] = True
+    return log
 
 
 def main():
@@ -124,7 +165,7 @@ def main():
 
     # Get response log.
     logger.info('generating response log')
-    response_log = get_response_log(infile)
+    log = get_response_log(infile)
 
     # Scrub Phase 1 duplicate responses.
     counts = {
@@ -132,13 +173,12 @@ def main():
         'duplicate': 0
         }
     logger.info('scrubbing duplicate results')
-    cnt = 0
     with get_temp_file() as temp:
         with open(infile, 'r') as fin:
             writer = csv.writer(temp, delimiter=',', lineterminator='\n')
             for row in csv.reader(fin, delimiter=','):
                 if row[0] != 'record_id':
-                    if response_log[row[8]][int(row[0])]['remove']:
+                    if log[row[8]][int(row[0])]['remove']:
                         counts['duplicate'] += 1
                     else:
                         writer.writerow(row)

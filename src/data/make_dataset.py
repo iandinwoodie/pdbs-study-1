@@ -25,10 +25,10 @@ def get_temp_file():
     return tempfile.NamedTemporaryFile(mode='w', dir=interim_dir, delete=True)
 
 
-class Response(object):
+class User(object):
 
     def __init__(self, row):
-        """Initializes Response object for a given row."""
+        """Initializes User object for a given row."""
         self.uid = int(row[0])
         self.hash = row[8]
         self.status = self.get_statuses(row)
@@ -50,31 +50,31 @@ class Response(object):
         return set(dog_list)
 
 
-def add_response_to_log(log, response):
-    """Add a response to the response log."""
-    if response.hash not in log:
-        log[response.hash] = {}
-    log[response.hash][response.uid] = {}
-    log[response.hash][response.uid]['response'] = response
-    log[response.hash][response.uid]['remove'] = False
+def add_user_to_log(log, user):
+    """Add a user to the user log."""
+    if user.hash not in log:
+        log[user.hash] = {}
+    log[user.hash][user.uid] = {}
+    log[user.hash][user.uid]['user'] = user
+    log[user.hash][user.uid]['remove'] = False
     return log
 
 
-def get_response_log(infile):
+def get_user_log(infile):
     """Generate a dictionary of user hashes with duplicate entries."""
     log = {}
     with open(infile, 'r') as fin:
         for row in csv.reader(fin, delimiter=','):
             if row[0] != 'record_id':
                 # Fetch the relevant information from the entry row.
-                response = Response(row)
-                log = add_response_to_log(log, response)
-    for user, responses in log.items():
-        if len(responses) > 1:
-            combos = list(map(dict, combinations(responses.items(), 2)))
+                user = User(row)
+                log = add_user_to_log(log, user)
+    for user, users in log.items():
+        if len(users) > 1:
+            combos = list(map(dict, combinations(users.items(), 2)))
             for combo in combos:
-                r1 = combo[list(combo)[0]]['response']
-                r2 = combo[list(combo)[1]]['response']
+                r1 = combo[list(combo)[0]]['user']
+                r2 = combo[list(combo)[1]]['user']
                 if (not bool(r1.dogs.symmetric_difference(r2.dogs)) or
                     bool(r1.dogs.intersection(r2.dogs))):
                     # Same or shared list of dogs.
@@ -94,37 +94,37 @@ def scrub_duplicates():
     """
     Scrubs duplicates from raw data.
 
-    Criteria to update existing response:
-        - The updated response must not replace a complete entry for a specific dog
+    Criteria to update existing user:
+        - The updated user must not replace a complete entry for a specific dog
           with an incomplete entry.
-        - The updated response must not replace a complete entry for a specific dog
+        - The updated user must not replace a complete entry for a specific dog
           with an entry for a different dog.
-        - The updated response must not detract from the existing data of a complete
+        - The updated user must not detract from the existing data of a complete
           entry for a specific dog.
 
-    Criteria to dispose subsequent response:
-        - The updated response replaces a complete entry for a specific dog with an
+    Criteria to dispose subsequent user:
+        - The updated user replaces a complete entry for a specific dog with an
           incomplete entry.
-        - The updated response replaces a complete entry for a specific dog with an
+        - The updated user replaces a complete entry for a specific dog with an
           entry for a different dog.
-        - The updated response detracts from the existing data of a complete entry
+        - The updated user detracts from the existing data of a complete entry
           for a specific dog.
 
-    Criteria to keep existing and subsequent responses:
-        - Both the existing and updated responses contain complete dog-specific
+    Criteria to keep existing and subsequent users:
+        - Both the existing and updated users contain complete dog-specific
           entries.
-        - No complete entry for the same specific dog is shared in both responses.
+        - No complete entry for the same specific dog is shared in both users.
     """
     logger = logging.getLogger(__name__)
 
     # Determine the input and output files.
     infile = get_data_file()
 
-    # Get response log.
-    logger.info('generating response log')
-    log = get_response_log(infile)
+    # Get user log.
+    logger.info('generating user log')
+    log = get_user_log(infile)
 
-    # Scrub Phase 1 duplicate responses.
+    # Scrub Phase 1 duplicate users.
     counts = {
         'original': 0,
         'duplicate': 0

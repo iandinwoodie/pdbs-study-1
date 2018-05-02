@@ -95,15 +95,19 @@ class User(object):
         """Return the list of dogs for the user."""
         return self.__dogs
 
+    def __get_single_entry(self, dog):
+        """Return a single dog specific user entry."""
+        entry = self.__uid[:]
+        entry += self.__demographics
+        entry += dog.get_data()
+        entry += self.__feedback
+        return entry
+
     def get_entries(self):
         """Return a list of dog specific user entries."""
         entries = []
         for dog in self.__dogs:
-            entry = self.__uid
-            entry += self.__demographics
-            entry += dog.get_data()
-            entry += self.__feedback
-            entries.append(entry)
+            entries.append(self.__get_single_entry(dog))
         return entries
 
     def get_metrics(self):

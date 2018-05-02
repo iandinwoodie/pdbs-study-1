@@ -77,6 +77,7 @@ target/
 
 # exclude data from source control by default
 processed.csv
+metrics.txt
 
 # Mac OS-specific storage files
 .DS_Store

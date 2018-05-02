@@ -43,7 +43,7 @@ class User(object):
         # incomplete: row[10]=0, partial: row[688]=0
         self.__hash = data[8]
         self.__demographics = data[1:9]
-        self.__uid = [uid]
+        self.__uid = uid
         self.__feedback = data[685:687]
         self.__indices = []
         self.__add_index(data[0])
@@ -97,7 +97,7 @@ class User(object):
 
     def __get_single_entry(self, dog):
         """Return a single dog specific user entry."""
-        entry = self.__uid[:]
+        entry = [self.__uid]
         entry += self.__demographics
         entry += dog.get_data()
         entry += self.__feedback

@@ -11,8 +11,6 @@ def get_data_file():
     """Determine the data file to be scrubbed."""
     if os.path.isfile(processed_path):
         return processed_path
-    elif os.path.isfile(interim_path):
-        return interim_path
     elif os.path.isfile(raw_path):
         return raw_path
     else:
@@ -22,7 +20,7 @@ def get_data_file():
 
 def get_temp_file():
     """Generate a temporary output file."""
-    return tempfile.NamedTemporaryFile(mode='w', dir=interim_dir, delete=True)
+    return tempfile.NamedTemporaryFile(mode='w', dir=data_dir, delete=True)
 
 
 class User(object):
@@ -253,8 +251,7 @@ if __name__ == '__main__':
 
     # store necessary paths
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
-    interim_dir = os.path.join(project_dir, 'data', 'interim')
-    interim_path = os.path.join(interim_dir, 'interim.csv')
+    data_dir = os.path.join(project_dir, 'data')
     raw_path = os.path.join(project_dir, 'data', 'raw', 'raw.csv')
     processed_path = os.path.join(project_dir, 'data', 'processed', 'processed.csv')
 

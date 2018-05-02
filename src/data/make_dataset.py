@@ -131,7 +131,6 @@ class UserDatabase(object):
             'users': 0,
             'dogs': 0,
             'entries': 0,
-            'phase2': 0,
             'partial': 0,
             'incomplete': 0,
             'complete': 0
@@ -147,7 +146,6 @@ class UserDatabase(object):
 
     def __is_valid_entry(self, data):
         if data[1] != 'event_1_arm_1':
-            self.__metrics['phase2'] += 1
             return False
         elif int(data[10]) != 2 or int(data[145]) != 2:
             self.__metrics['incomplete'] += 1
@@ -195,6 +193,7 @@ class Scribe(object):
         """Initialize Scribe object."""
         self.__db = userdb.get_database()
         self.__header = userdb.get_header()
+        self.__metrics = userdb.get_metrics()
 
     def write_database(self, outfile):
         """Write the user database to an output file."""
@@ -206,6 +205,19 @@ class Scribe(object):
                 for dog_entry in dog_entries:
                     writer.writerow(dog_entry)
                     temp.flush()
+            shutil.copy2(temp.name, outfile)
+
+    def write_metrics(self, outfile):
+        """Write the user database metrics to an output file."""
+        with get_temp_file() as temp:
+            line = '#' * 80
+            temp.write('%s\n' % line)
+            message = 'Phase 1 Metrics'
+            temp.write('%s\n' % message)
+            temp.write('%s\n' % line)
+            for metric, value in sorted(self.__metrics.items()):
+                temp.write('%s: %d\n' %(metric, value))
+            temp.flush()
             shutil.copy2(temp.name, outfile)
 
 
@@ -224,15 +236,11 @@ def main():
         for row in csv.reader(fin, delimiter=','):
             db.add_entry(row)
     logger.info('calculating response metrics')
-    metrics = db.get_metrics()
-    print('phase2: %d' % metrics['phase2'])
-    print('partial: %d, complete: %d, incomplete: %d'
-          %(metrics['partial'], metrics['complete'], metrics['incomplete']))
-    print('users: %d, dogs: %d, entries: %d'
-          %(metrics['users'], metrics['dogs'], metrics['entries']))
-    logger.info('recording the processed data')
     scribe = Scribe(db)
+    logger.info('recording the processed data')
     scribe.write_database(processed_path)
+    logger.info('recording the processed data metrics')
+    scribe.write_metrics(metrics_path)
 
 
 if __name__ == '__main__':
@@ -244,6 +252,7 @@ if __name__ == '__main__':
     data_dir = os.path.join(project_dir, 'data')
     raw_path = os.path.join(data_dir, 'raw', 'raw.csv')
     processed_path = os.path.join(data_dir, 'processed', 'processed.csv')
+    metrics_path = os.path.join(data_dir, 'processed', 'metrics.txt')
 
     main()
 

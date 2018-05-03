@@ -26,11 +26,15 @@ class Database(object):
         """Terminate the connection to the database."""
         self.__conn.close()
 
-    def get_count(self, table):
+    def commit(self):
+        """Commit changes to the database."""
+        self.__conn.commit()
+
+    def get_count(self, table, modifiers=''):
         """Return the record count for the provided table."""
-        query = 'SELECT COUNT(*) FROM  %s;' %table
+        query = 'SELECT COUNT(*) FROM %s %s;' %(table, modifiers)
         self.__cursor.execute(query)
-        return self.__cursor.fetchone()
+        return self.__cursor.fetchone()[0]
 
     def create_table(self, table, header):
         """Create a table in the database."""
@@ -44,7 +48,6 @@ class Database(object):
         placeholders = ', '.join(placeholder * len(record))
         query = 'INSERT INTO %s VALUES (%s);' %(table, placeholders)
         self.__cursor.execute(query, record)
-        self.__conn.commit()
 
 
 class Manager(object):
@@ -100,15 +103,15 @@ class Manager(object):
             dog_entries = user_entry.get_dogs()
             for dog_entry in dog_entries:
                 self.__db.insert_record('dogs', dog_entry.get_data())
-
-    def get_headers(self):
-        """Return the database table headers."""
-        return self.__headers
+        self.__db.commit()
 
     def display_metrics(self):
         """Display the database metrics."""
-        print(self.__db.get_count('users'))
-        print(self.__db.get_count('dogs'))
+        print('USERS')
+        print('total: %d' %self.__db.get_count('users'))
+        print('DOGS')
+        print('total: %d' %self.__db.get_count('dogs'))
+
 
 class DogEntry(object):
 
@@ -171,10 +174,6 @@ class UserEntry(object):
         """Update the user with new entry data."""
         # We do not currently update user info or feedback
         self.__update_dogs(data)
-
-    def get_user(self):
-        """Return the email hash for the user."""
-        return self.__user
 
     def get_user_info(self):
         """Return the user info."""

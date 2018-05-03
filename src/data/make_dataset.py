@@ -33,6 +33,7 @@ class Database(object):
     def get_count(self, table, modifiers=''):
         """Return the record count for the provided table."""
         query = 'SELECT COUNT(*) FROM %s %s;' %(table, modifiers)
+        print(query)
         self.__cursor.execute(query)
         return self.__cursor.fetchone()[0]
 
@@ -75,6 +76,10 @@ class Manager(object):
                 self.__headers['dogs'] = row[11:146]
                 self.__headers['feedback'] = row[685:689]
                 break
+        # Add the record_id field to all headers
+        self.__headers['dogs'].insert(0, self.__headers['users'][0])
+        self.__headers['feedback'].insert(0, self.__headers['users'][0])
+        # Remove clutter to improve field readability
         for key, value in self.__headers.items():
             h = value
             for i in range(len(h)):
@@ -107,19 +112,25 @@ class Manager(object):
 
     def display_metrics(self):
         """Display the database metrics."""
-        print('USERS')
-        print('total: %d' %self.__db.get_count('users'))
-        print('DOGS')
-        print('total: %d' %self.__db.get_count('dogs'))
+        print('users:')
+        print('  - total: %d' %self.__db.get_count('users'))
+        mod = 'WHERE phase_1_welcome_complete="0"'
+        print('  - invalid: %d' %self.__db.get_count('users', mod))
+        join = 'JOIN feedback ON users.record_id=feedback.record_id'
+        mod = '%s WHERE phase_1_feedback_complete="2"' %join
+        print('  - complete: %d' %self.__db.get_count('users', mod))
+        print('dogs:')
+        print('  - total: %d' %self.__db.get_count('dogs'))
 
 
 class DogEntry(object):
 
-    def __init__(self, data):
+    def __init__(self, uid, data):
         """Initialize a DogEntry object."""
         self.__name = data[0]
         self.__data = data
         self.__verify_data()
+        self.__data.insert(0, uid)
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""
@@ -141,9 +152,10 @@ class UserEntry(object):
         """Initialize a UserEntry object."""
         # demographic status: 10, feedback status: 688 
         # incomplete: row[10]=0, partial: row[688]=0
+        self.__uid = uid
         self.__user = data[8]
         self.__user_info = [uid] + data[1:11] # indices replaced with uid
-        self.__feedback = data[685:689]
+        self.__feedback = [uid] + data[685:689]
         self.__dogs = []
         self.__update_dogs(data)
 
@@ -163,12 +175,12 @@ class UserEntry(object):
                 for counter, dog in enumerate(self.__dogs):
                     if dog.get_name().lower() == dog_data[0].lower():
                         # Update existing data with newest complete submission.
-                        self.__dogs[counter] = DogEntry(dog_data)
+                        self.__dogs[counter] = DogEntry(self.__uid, dog_data)
                         replacement = True
                         break
                 if not replacement:
                     # If an entry for the dog does not exist, create one.
-                    self.__dogs.append(DogEntry(dog_data))
+                    self.__dogs.append(DogEntry(self.__uid, dog_data))
 
     def update(self, data):
         """Update the user with new entry data."""

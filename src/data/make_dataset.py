@@ -3,6 +3,7 @@ import logging
 import os
 import shutil
 import tempfile
+import sqlite3
 
 
 def get_data_file():
@@ -42,7 +43,7 @@ class User(object):
         # demographic status: 10, feedback status: 688 
         # incomplete: row[10]=0, partial: row[688]=0
         self.__hash = data[8]
-        self.__demographics = data[1:9]
+        self.__demographics = data[1:11]
         self.__uid = uid
         self.__feedback = data[685:687]
         self.__indices = []
@@ -95,7 +96,7 @@ class User(object):
         """Return the list of dogs for the user."""
         return self.__dogs
 
-    def __get_single_entry(self, dog):
+    def __get_single_dog_entry(self, dog):
         """Return a single dog specific user entry."""
         entry = [self.__uid]
         entry += self.__demographics
@@ -103,12 +104,18 @@ class User(object):
         entry += self.__feedback
         return entry
 
-    def get_entries(self):
+    def get_dog_entries(self):
         """Return a list of dog specific user entries."""
         entries = []
         for dog in self.__dogs:
             entries.append(self.__get_single_entry(dog))
         return entries
+
+    def get_demo_entry(self):
+        """Return the user demographics entry."""
+        entry = [self.__uid]
+        entry += self.__demographics
+        return entry
 
     def get_metrics(self):
         """Return the user metrics."""
@@ -139,7 +146,7 @@ class UserDatabase(object):
     def __parse_header(self, data):
         """Parse the user database header from the given data."""
         if not self.__header_recorded:
-            self.__header = data[0:9]
+            self.__header = data[0:10]
             self.__header += data[11:144]
             self.__header += data[685:687]
             self.__header_recorded = True
@@ -197,15 +204,38 @@ class Scribe(object):
 
     def write_database(self, outfile):
         """Write the user database to an output file."""
-        with get_temp_file() as temp:
-            writer = csv.writer(temp, delimiter=',', lineterminator='\n')
-            writer.writerow(self.__header)
-            for user, user_entry in self.__db.items():
-                dog_entries = user_entry.get_entries()
-                for dog_entry in dog_entries:
-                    writer.writerow(dog_entry)
-                    temp.flush()
-            shutil.copy2(temp.name, outfile)
+        #with get_temp_file() as temp:
+        #    writer = csv.writer(temp, delimiter=',', lineterminator='\n')
+        #    writer.writerow(self.__header)
+        #    for user, user_entry in self.__db.items():
+        #        dog_entries = user_entry.get_entries()
+        #        for dog_entry in dog_entries:
+        #            writer.writerow(dog_entry)
+        #            temp.flush()
+        #    shutil.copy2(temp.name, outfile)
+        if os.path.exists(processed_db_path):
+            os.remove(processed_db_path)
+        table = 'demographics'
+        field_name = 'id'
+        field_type = 'INTEGER'
+        # Connect to db.
+        conn = sqlite3.connect(processed_db_path)
+        c = conn.cursor()
+        fields = ' text, '.join(self.__header[0:11])
+        sql_query = 'CREATE TABLE %s (%s);' %(table, fields)
+        c.execute(sql_query)
+        placeholder = '?'
+        placeholders = ', '.join(placeholder * 11)
+        sql_query = 'INSERT INTO %s VALUES (%s);' %(table, placeholders)
+        for user, user_entry in self.__db.items():
+            demo_entry = user_entry.get_demo_entry()
+            c.execute(sql_query, demo_entry)
+        conn.commit()
+        #sql_query = 'SELECT COUNT(*) FROM  %s;' %table
+        #c.execute(sql_query)
+        #print(list(c))
+        conn.close()
+
 
     def write_metrics(self, outfile):
         """Write the user database metrics to an output file."""
@@ -253,6 +283,7 @@ if __name__ == '__main__':
     raw_path = os.path.join(data_dir, 'raw', 'raw.csv')
     processed_path = os.path.join(data_dir, 'processed', 'processed.csv')
     metrics_path = os.path.join(data_dir, 'processed', 'metrics.txt')
+    processed_db_path = os.path.join(data_dir, 'processed', 'processed.db')
 
     main()
 

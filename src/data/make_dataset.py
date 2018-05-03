@@ -5,6 +5,9 @@ import re
 import shutil
 import sqlite3
 
+g_incomplete = 0
+g_partial = 0
+g_complete = 0
 
 def get_data_file():
     """Verify the input data file."""
@@ -154,8 +157,8 @@ class UserEntry(object):
         # incomplete: row[10]=0, partial: row[688]=0
         self.__uid = uid
         self.__user = data[8]
-        self.__user_info = [uid] + data[1:11] # indices replaced with uid
-        self.__feedback = [uid] + data[685:689]
+        self.__user_info = data[1:11] # start at one to discard redcap ID
+        self.__feedback = data[685:689]
         self.__dogs = []
         self.__update_dogs(data)
 
@@ -182,18 +185,34 @@ class UserEntry(object):
                     # If an entry for the dog does not exist, create one.
                     self.__dogs.append(DogEntry(self.__uid, dog_data))
 
+    def __update_user_info(self, data):
+        """Update user info for the user."""
+        if data[10] == '2':
+            self.__user_info = data[1:11]
+
+    def __update_feedback(self, data):
+        """Update feedback for the user."""
+        if data[688] == '2':
+            self.__feedback = data[685:689]
+
     def update(self, data):
         """Update the user with new entry data."""
         # We do not currently update user info or feedback
         self.__update_dogs(data)
+        self.__update_user_info(data)
+        self.__update_feedback(data)
 
     def get_user_info(self):
         """Return the user info."""
-        return self.__user_info
+        user_info = self.__user_info[:]
+        user_info.insert(0, self.__uid)
+        return user_info
 
     def get_feedback(self):
         """Return the feedback for the user."""
-        return self.__feedback
+        feedback = self.__feedback[:]
+        feedback.insert(0, self.__uid)
+        return feedback
 
     def get_dogs(self):
         """Return the list of dogs entries for the user."""
@@ -208,11 +227,21 @@ class Datastore(object):
         self.__uid = 0 # user ID
 
     def __is_valid_entry(self, data):
+        global g_incomplete
+        global g_partial
+        global g_complete
         if data[1] == 'redcap_event_name':
             return False # header
         elif data[1] == 'event_2_arm_1':
             return False # phase 2
         else:
+            if data[10] != '2' or  data[145] != '2':
+                g_incomplete += 1
+            elif data[688] != '2':
+                g_partial += 1
+            else:
+                g_complete += 1
+                print(data[8])
             return True
 
     def add_entry(self, data):
@@ -249,6 +278,9 @@ def main():
     manager = Manager(infile)
     manager.display_metrics()
     logger.info('construction of database complete')
+    print('incomplete: %d' %g_incomplete)
+    print('partial: %d' %g_partial)
+    print('complete: %d' %g_complete)
 
 
 if __name__ == '__main__':

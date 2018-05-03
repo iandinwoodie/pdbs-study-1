@@ -124,7 +124,7 @@ class DogEntry(object):
     def __verify_data(self):
         """Verify the recorded dog entry data."""
         if len(self.__data) < 135:
-            self.__data.insert(133, 999)
+            self.__data.insert(133, 0)
 
     def get_name(self):
         """Return the dog name."""

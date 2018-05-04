@@ -5,9 +5,6 @@ import re
 import shutil
 import sqlite3
 
-g_incomplete = 0
-g_partial = 0
-g_complete = 0
 
 def get_data_file():
     """Verify the input data file."""
@@ -36,7 +33,6 @@ class Database(object):
     def get_count(self, table, modifiers=''):
         """Return the record count for the provided table."""
         query = 'SELECT COUNT(*) FROM %s %s;' %(table, modifiers)
-        print(query)
         self.__cursor.execute(query)
         return self.__cursor.fetchone()[0]
 
@@ -113,17 +109,23 @@ class Manager(object):
                 self.__db.insert_record('dogs', dog_entry.get_data())
         self.__db.commit()
 
-    def display_metrics(self):
-        """Display the database metrics."""
-        print('users:')
-        print('  - total: %d' %self.__db.get_count('users'))
-        mod = 'WHERE phase_1_welcome_complete="0"'
-        print('  - invalid: %d' %self.__db.get_count('users', mod))
-        join = 'JOIN feedback ON users.record_id=feedback.record_id'
-        mod = '%s WHERE phase_1_feedback_complete="2"' %join
-        print('  - complete: %d' %self.__db.get_count('users', mod))
-        print('dogs:')
-        print('  - total: %d' %self.__db.get_count('dogs'))
+    def write_metrics(self):
+        """Write the database metrics."""
+        offset = '  '
+        with open(metrics_path, 'w') as fout:
+            fout.write('users:\n')
+            fout.write('%s- total: %d\n'
+                       %(offset, self.__db.get_count('users')))
+            mod = 'WHERE phase_1_welcome_complete="0"'
+            fout.write('%s- invalid: %d\n'
+                       %(offset, self.__db.get_count('users', mod)))
+            join = 'JOIN feedback ON users.record_id=feedback.record_id'
+            mod = '%s WHERE phase_1_feedback_complete="2"' %join
+            fout.write('%s- complete: %d\n'
+                       %(offset, self.__db.get_count('users', mod)))
+            fout.write('dogs:\n')
+            fout.write('%s- total: %d\n'
+                       %(offset, self.__db.get_count('dogs')))
 
 
 class DogEntry(object):
@@ -227,21 +229,11 @@ class Datastore(object):
         self.__uid = 0 # user ID
 
     def __is_valid_entry(self, data):
-        global g_incomplete
-        global g_partial
-        global g_complete
         if data[1] == 'redcap_event_name':
             return False # header
         elif data[1] == 'event_2_arm_1':
             return False # phase 2
         else:
-            if data[10] != '2' or  data[145] != '2':
-                g_incomplete += 1
-            elif data[688] != '2':
-                g_partial += 1
-            else:
-                g_complete += 1
-                print(data[8])
             return True
 
     def add_entry(self, data):
@@ -276,11 +268,9 @@ def main():
 
     logger.info('constructing an sqlite database')
     manager = Manager(infile)
-    manager.display_metrics()
-    logger.info('construction of database complete')
-    print('incomplete: %d' %g_incomplete)
-    print('partial: %d' %g_partial)
-    print('complete: %d' %g_complete)
+    logger.info('recording metrics')
+    manager.write_metrics()
+    logger.info('dataset generation complete')
 
 
 if __name__ == '__main__':
@@ -292,6 +282,8 @@ if __name__ == '__main__':
     data_dir = os.path.join(project_dir, 'data')
     raw_path = os.path.join(data_dir, 'raw', 'raw.csv')
     db_path = os.path.join(data_dir, 'processed', 'processed.db')
+    data_dir = os.path.join(project_dir, 'reports')
+    metrics_path = os.path.join(project_dir, 'reports', 'metrics.txt')
 
     main()
 

@@ -8,8 +8,8 @@ import sqlite3
 
 def get_data_file():
     """Verify the input data file."""
-    if os.path.isfile(raw_path):
-        return raw_path
+    if os.path.isfile(raw_filepath):
+        return raw_filepath
     else:
         print('Error: no scrubbable data file exists.')
         quit()
@@ -39,7 +39,7 @@ class Database(object):
     def create_table(self, table, header):
         """Create a table in the database."""
         fields = ' text, '.join(header)
-        query = 'CREATE TABLE %s (%s);' %(table, fields)
+        query = 'CREATE TABLE IF NOT EXISTS %s (%s);' %(table, fields)
         self.__cursor.execute(query)
 
     def insert_record(self, table, record):
@@ -54,7 +54,7 @@ class Manager(object):
 
     def __init__(self, path):
         """Initialize a Manager object."""
-        self.__db = Database(db_path)
+        self.__db = Database(processed_filepath)
         self.__path = path
         self.__headers = {}
         self.__parse_headers()
@@ -120,7 +120,7 @@ class Manager(object):
     def write_metrics(self):
         """Write the database metrics."""
         offset = '  '
-        with open(metrics_path, 'w') as fout:
+        with open(metrics_filepath, 'w') as fout:
             fout.write('users:\n')
             fout.write('%s- total: %d\n'
                        %(offset, self.__db.get_count('users')))
@@ -271,10 +271,9 @@ def main():
     infile = get_data_file()
     
     manager = Manager(infile)
-    if not os.path.exists(db_path):
-        logger.info('creating an sqlite database')
-        manager.create_tables()
-    logger.info('populating the database')
+    logger.info('creating tables if they do not exist')
+    manager.create_tables()
+    logger.info('populating/updating the database')
     manager.populate_tables()
     logger.info('recording metrics')
     manager.write_metrics()
@@ -289,10 +288,9 @@ if __name__ == '__main__':
     # store necessary paths
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     data_dir = os.path.join(project_dir, 'data')
-    raw_path = os.path.join(data_dir, 'raw', 'raw.csv')
-    db_path = os.path.join(data_dir, 'processed', 'processed.db')
-    data_dir = os.path.join(project_dir, 'reports')
-    metrics_path = os.path.join(project_dir, 'reports', 'metrics.txt')
+    raw_filepath = os.path.join(data_dir, 'raw', 'raw.csv')
+    processed_filepath = os.path.join(data_dir, 'processed', 'processed.db')
+    metrics_filepath = os.path.join(project_dir, 'reports', 'metrics.txt')
 
     main()
 

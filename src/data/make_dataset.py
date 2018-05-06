@@ -46,15 +46,8 @@ class Database(object):
         """Insert record into the database table."""
         placeholder = '?'
         placeholders = ', '.join(placeholder * len(record))
-        query = 'INSERT INTO %s VALUES (%s);' %(table, placeholders)
+        query = 'INSERT OR REPLACE INTO %s VALUES (%s);' %(table, placeholders)
         self.__cursor.execute(query, record)
-
-    def insert_record(self, table, record):
-        """Update record in the database table."""
-        placeholder = '?'
-        placeholders = ', '.join(placeholder * len(record))
-        # insert update query here
-        # self.__cursor.execute(query, record)
 
 
 class Manager(object):
@@ -277,16 +270,14 @@ def main():
     logger.info('locating the input data file')
     infile = get_data_file()
     
-    if os.path.exists(db_path):
-        logger.info('updating the database')
-    else:
-        logger.info('constructing an sqlite database')
-        manager = Manager(infile)
-        logger.info('populating totals')
+    manager = Manager(infile)
+    if not os.path.exists(db_path):
+        logger.info('creating an sqlite database')
         manager.create_tables()
-        manager.populate_tables()
-        logger.info('recording metrics')
-        manager.write_metrics()
+    logger.info('populating the database')
+    manager.populate_tables()
+    logger.info('recording metrics')
+    manager.write_metrics()
 
     logger.info('dataset generation complete')
 

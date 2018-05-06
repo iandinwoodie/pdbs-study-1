@@ -39,14 +39,14 @@ class Database(object):
     def create_table(self, table, header):
         """Create a table in the database."""
         fields = ' text, '.join(header)
-        query = 'CREATE TABLE IF NOT EXISTS %s (%s);' %(table, fields)
+        query = 'CREATE TABLE %s (%s);' %(table, fields)
         self.__cursor.execute(query)
 
     def insert_record(self, table, record):
         """Insert record into the database table."""
         placeholder = '?'
         placeholders = ', '.join(placeholder * len(record))
-        query = 'INSERT OR REPLACE INTO %s VALUES (%s);' %(table, placeholders)
+        query = 'INSERT INTO %s VALUES (%s);' %(table, placeholders)
         self.__cursor.execute(query, record)
 
 
@@ -267,13 +267,14 @@ def main():
     """
     logger = logging.getLogger(__name__)
 
-    logger.info('locating the input data file')
-    infile = get_data_file()
-    
-    manager = Manager(infile)
-    logger.info('creating tables if they do not exist')
+    if os.path.exists(processed_filepath):
+        logger.info('remove existing processed dataset')
+        os.remove(processed_filepath)
+
+    manager = Manager(get_data_file())
+    logger.info('creating tables')
     manager.create_tables()
-    logger.info('populating/updating the database')
+    logger.info('populating the database')
     manager.populate_tables()
     logger.info('recording metrics')
     manager.write_metrics()

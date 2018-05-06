@@ -46,7 +46,7 @@ class Database(object):
         """Insert record into the database table."""
         placeholder = '?'
         placeholders = ', '.join(placeholder * len(record))
-        query = 'INSERT INTO %s VALUES (%s);' %(table, placeholders)
+        query = 'INSERT OR REPLACE INTO %s VALUES (%s);' %(table, placeholders)
         self.__cursor.execute(query, record)
 
 
@@ -60,8 +60,6 @@ class Manager(object):
         self.__parse_headers()
         self.__data = {}
         self.__parse_data()
-        self.__create_tables()
-        self.__populate_tables()
 
     def __del__(self):
         """Destructor for the Manager object."""
@@ -93,13 +91,13 @@ class Manager(object):
                 datastore.add_entry(row)
         self.__data = datastore.get_users()
 
-    def __create_tables(self):
+    def create_tables(self):
         """Generate tables with the generated headers."""
         self.__db.create_table('users', self.__headers['users'])
         self.__db.create_table('dogs', self.__headers['dogs'])
         self.__db.create_table('feedback', self.__headers['feedback'])
 
-    def __populate_tables(self):
+    def populate_tables(self):
         """Populate the generated tables with the raw data."""
         for user, user_entry in self.__data.items():
             self.__db.insert_record('users', user_entry.get_user_info())
@@ -107,6 +105,16 @@ class Manager(object):
             dog_entries = user_entry.get_dogs()
             for dog_entry in dog_entries:
                 self.__db.insert_record('dogs', dog_entry.get_data())
+        self.__db.commit()
+
+    def update_tables(self):
+        """Update the generated tables with the raw data."""
+        for user, user_entry in self.__data.items():
+            self.__db.insert_record('users', user_entry.get_user_info())
+            self.__db.insert_record('feedback', user_entry.get_feedback())
+            dog_entries = user_entry.get_dogs()
+            for dog_entry in dog_entries:
+                self.__db.update_record('dogs', dog_entry.get_data())
         self.__db.commit()
 
     def write_metrics(self):
@@ -259,17 +267,18 @@ def main():
     """
     logger = logging.getLogger(__name__)
 
-    if os.path.exists(db_path):
-        logger.info('removing existing processed database')
-        os.remove(db_path)
-
     logger.info('locating the input data file')
     infile = get_data_file()
-
-    logger.info('constructing an sqlite database')
+    
     manager = Manager(infile)
+    if not os.path.exists(db_path):
+        logger.info('creating an sqlite database')
+        manager.create_tables()
+    logger.info('populating the database')
+    manager.populate_tables()
     logger.info('recording metrics')
     manager.write_metrics()
+
     logger.info('dataset generation complete')
 
 

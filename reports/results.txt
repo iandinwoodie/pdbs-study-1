@@ -1,7 +1,0 @@
-For Phase I of the PDBS there were a total of 3385 responses.
-
-Phase I submissions included 2934 complete, 93 partially complete, and 358
-incomplete responses.
-
-Phase I submissions included 2911 complete and 85 partially complete responses
-after removing 31 conflicting duplicate entries.

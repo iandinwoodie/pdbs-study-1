@@ -7,7 +7,7 @@ import sqlite3
 
 
 def get_data_file():
-    """Verify the input data file."""
+    """Verify that the input data file exists."""
     if os.path.isfile(raw_filepath):
         return raw_filepath
     else:

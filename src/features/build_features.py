@@ -1,6 +1,8 @@
 import logging
 import os
 import sqlite3
+import pandas as pd
+from scipy.stats import chisquare
 
 
 def get_data_file():
@@ -30,8 +32,8 @@ class Database(object):
     def select(self, table, fields, qualifications=''):
         """Return the data for the provided criteria."""
         query = 'SELECT %s FROM %s %s;' %(fields, table, qualifications)
-        self.__cursor.execute(query)
-        return self.__cursor.fetchall()
+        df = pd.read_sql_query(query, self.__conn)
+        return df
 
 
 class Manager(object):
@@ -53,7 +55,13 @@ class Manager(object):
         # q04_2 = noise phobia
         # q04_9 = separation anxiety
         fields = 'q04_1, q04_2, q04_9'
-        data = self.__db.select(table, fields)
+        df = self.__db.select(table, fields)
+        df.columns = ['thunder', 'noise', 'anxiety']
+        df['thunder'] = pd.to_numeric(df['thunder'])
+        df['noise'] = pd.to_numeric(df['noise'])
+        df['anxiety'] = pd.to_numeric(df['anxiety'])
+        print(df.head())
+        print(df.dtypes)
         ## Determine relationships.
 
 

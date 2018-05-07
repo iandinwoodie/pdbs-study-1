@@ -2,7 +2,7 @@ import logging
 import os
 import sqlite3
 import pandas as pd
-from scipy.stats import chisquare
+import scipy.stats as scs
 
 
 def get_data_file():
@@ -60,10 +60,22 @@ class Manager(object):
         df['thunder'] = pd.to_numeric(df['thunder'])
         df['noise'] = pd.to_numeric(df['noise'])
         df['anxiety'] = pd.to_numeric(df['anxiety'])
-        print(df.head())
-        print(df.dtypes)
         ## Determine relationships.
-
+        print('First Investigation:')
+        print('Modes:')
+        print(df.mode())
+        print('')
+        pairs = [
+            ['thunder', 'noise'],
+            ['thunder', 'anxiety'],
+            ['noise', 'anxiety']
+            ]
+        for pair in pairs:
+            print('Chi2 Contingency: %s - %s'
+                  %(pair[0], pair[1]))
+            contingency = pd.crosstab(df[pair[0]], df[pair[1]])
+            print(scs.chi2_contingency(contingency))
+            print('')
 
 
 def main():

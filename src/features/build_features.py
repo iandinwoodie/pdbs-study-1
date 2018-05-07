@@ -3,6 +3,10 @@ import os
 import sqlite3
 import pandas as pd
 import scipy.stats as scs
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from itertools import combinations
 
 
 def get_data_file():
@@ -98,6 +102,56 @@ class Manager(object):
         print(scs.chi2_contingency(contingency))
         print('')
 
+    def general_category_investigation(self):
+        """Perform general category analysis."""
+        ## Get relevant data.
+        table = 'dogs'
+        # q02_main_1 = aggression
+        # q02_main_2 = fearful/anxious behavior
+        # q02_main_3 = repetitive behavior
+        # q02_main_4 = house soiling
+        # q02_main_5 = excessive barking
+        # q02_main_6 = jumping on people
+        # q02_main_7 = mounting
+        # q02_main_8 = eating feces
+        # q02_main_9 = destructive behavior
+        # q02_main_10 = rolling in repulsive things
+        # q02_main_12 = running away
+        # q02_main_13 = overactive/hyperactive
+        fields = ('q02_main_1, q02_main_2, q02_main_3, q02_main_4, q02_main_5, '
+                  'q02_main_6, q02_main_7, q02_main_8, q02_main_9, q02_main_10,'
+                  ' q02_main_12, q02_main_13')
+        df = self.__db.select(table, fields)
+        labels = ['aggression', 'anxious', 'repetitive', 'soiling', 'barking',
+                  'jumping', 'mounting', 'feces', 'destructive', 'rolling',
+                  'running', 'overactive']
+        df.columns = labels
+        for label in labels:
+            df[label] = pd.to_numeric(df[label])
+        ## Determine relationships.
+        print('General Category Investigation:')
+        print('Modes:')
+        print(df.mode())
+        print('')
+        print('Chi2 Contingency:')
+        combos = list(combinations(range(0,12), r=2))
+        for combo in combos:
+            contingency = pd.crosstab(df[labels[combo[0]]],
+                                      df[labels[combo[1]]])
+            c, p, dof, expected = scs.chi2_contingency(contingency)
+            if p > 0.05:
+                print('%s - %s:' %(labels[combo[0]], labels[combo[1]]))
+                print('%f, %f, %f' %(c, p, dof))
+                print('')
+        corr = df.corr()
+        sns.set(style='white')
+        mask = np.zeros_like(corr, dtype=np.bool)
+        mask[np.triu_indices_from(mask)] = True
+        f, ax = plt.subplots(figsize=(11, 9))
+        cmap = sns.diverging_palette(220, 10, as_cmap=True)
+        sns.heatmap(corr, mask=mask, cmap=cmap, vmax=0.3, center=0,
+                    square=True, linewidths=0.5, cbar_kws={'shrink': 0.5})
+
 
 def main():
     """
@@ -109,6 +163,7 @@ def main():
     manager = Manager(get_data_file())
     manager.first_investigation()
     manager.second_investigation()
+    manager.general_category_investigation()
 
     logger.info('dataset generation complete')
 

@@ -48,7 +48,7 @@ class Manager(object):
         self.__db.close()
 
     def first_investigation(self):
-        """Perform first intvestigation analysis."""
+        """Perform first investigation analysis."""
         ## Get relevant data.
         table = 'dogs'
         # q04_1 = thunderstorm phobia
@@ -77,6 +77,27 @@ class Manager(object):
             print(scs.chi2_contingency(contingency))
             print('')
 
+    def second_investigation(self):
+        """Perform second investigation analysis."""
+        ## Get relevant data.
+        table = 'dogs'
+        # q02_main_2 = fearful/anxious behavior
+        # q02_main_3 = repetitive behavior
+        fields = 'q02_main_2, q02_main_3'
+        df = self.__db.select(table, fields)
+        df.columns = ['anxious', 'repetitive']
+        df['anxious'] = pd.to_numeric(df['anxious'])
+        df['repetitive'] = pd.to_numeric(df['repetitive'])
+        ## Determine relationships.
+        print('Second Investigation:')
+        print('Modes:')
+        print(df.mode())
+        print('')
+        print('Chi2 Contingency: anxious - repetitive')
+        contingency = pd.crosstab(df['anxious'], df['repetitive'])
+        print(scs.chi2_contingency(contingency))
+        print('')
+
 
 def main():
     """
@@ -87,6 +108,7 @@ def main():
 
     manager = Manager(get_data_file())
     manager.first_investigation()
+    manager.second_investigation()
 
     logger.info('dataset generation complete')
 

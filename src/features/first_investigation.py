@@ -1,4 +1,3 @@
-import logging
 import os
 import sqlite3
 import pandas as pd
@@ -61,40 +60,49 @@ class Manager(object):
         df['noise'] = pd.to_numeric(df['noise'])
         df['anxiety'] = pd.to_numeric(df['anxiety'])
         ## Determine relationships.
-        print('\nTotals:')
-        print(df.sum())
+        print('\nFirst Investigation:')
+        print('The Relationship Between Noise and Anxiety')
+        print('\nSums:')
+        for index, row in df.sum().iteritems():
+            print('%s = %d' %(index,row))
         print('\nModes:')
-        print(df.mode())
+        for index, row in df.mode().iteritems():
+            print('%s = %d' %(index,row))
         pairs = [
             ['thunder', 'noise'],
             ['thunder', 'anxiety'],
             ['noise', 'anxiety']
             ]
         for pair in pairs:
-            print('\nChi2 Contingency: %s - %s'
-                  %(pair[0], pair[1]))
+            print('\nContingency Table: (%s|%s)' %(pair[0], pair[1]))
             contingency = pd.crosstab(df[pair[0]], df[pair[1]])
+            print(contingency)
+            print('\nProbabilities: (%s|%s)' %(pair[0], pair[1]))
             for index, row in contingency.iterrows():
                 for index2, row2 in row.iteritems():
                     prob = row2/5017
-                    print('%s: %d, %s: %d = %.3f'
+                    print('%s: %d, %s: %d, P = %.3f'
                           %(contingency.axes[0].name, index, row.axes[0].name,
                             index2, prob))
+            print('\nChi-squared Test of Independence: (%s|%s)'
+                  %(pair[0], pair[1]))
             c, p, dof, expected = scs.chi2_contingency(contingency,
                                                        correction=False)
-            print('c: %f, p: %.2E, dof: %d' %(c, p, dof))
-        print('\nChi2 Contingency: anxiety - [noise, thunder]')
+            print('chi2 = %f, p = %.2E, dof = %d' %(c, p, dof))
+        print('\nContingency Table: (anxiety|noise+thunder)')
         contingency = pd.crosstab(df['anxiety'], [df['noise'], df['thunder']])
         print(contingency)
+        print('\nProbabilities: (anxiety|noise+thunder)')
         for index, row in contingency.iterrows():
             for index2, row2 in row.iteritems():
                 prob = row2/5017
-                print('%s: %d, %s: %d, %s: %d = %.3f'
+                print('%s: %d, %s: %d, %s: %d, P = %.3f'
                       %(contingency.axes[0].name, index, row.axes[0].names[0],
                         index2[0], row.axes[0].names[1], index2[1], prob))
+        print('\nChi-squared Test of Independence: (anxiety|noise+thunder)')
         c, p, dof, expected = scs.chi2_contingency(contingency,
                                                    correction=False)
-        print('c: %f, p: %.2E, dof: %d' %(c, p, dof))
+        print('chi2 = %f, p = %.2E, dof = %d' %(c, p, dof))
         print('')
 
 
@@ -103,18 +111,11 @@ def main():
     Runs feature processing scripts to analuze the cleaned data from
     (../processed).
     """
-    logger = logging.getLogger(__name__)
-
-    logger.info('running first investigation analysis')
     manager = Manager(get_data_file())
     manager.first_investigation()
-    logger.info('first investigation analysis complete')
 
 
 if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
     # store necessary paths
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     data_dir = os.path.join(project_dir, 'data')

@@ -59,23 +59,28 @@ class Manager(object):
         df['anxious'] = pd.to_numeric(df['anxious'])
         df['repetitive'] = pd.to_numeric(df['repetitive'])
         ## Determine relationships.
-        print('\nTotals:')
+        print('\nSecond Investigation:')
+        print('The Relationship Between Anxiety and Compulsion')
+        print('\nSums:')
         for index, row in df.sum().iteritems():
-            print('%s: %d' %(index,row))
+            print('%s = %d' %(index,row))
         print('\nModes:')
         for index, row in df.mode().iteritems():
-            print('%s: %d' %(index,row))
-        print('\nChi2 Contingency: anxious - repetitive')
+            print('%s = %d' %(index,row))
+        print('\nContingency Table:')
         contingency = pd.crosstab(df['anxious'], df['repetitive'])
+        print(contingency)
+        print('\nProbabilities:')
         for index, row in contingency.iterrows():
             for index2, row2 in row.iteritems():
                 prob = row2/5017
-                print('%s: %d, %s: %d = %.3f'
+                print('%s: %d, %s: %d, P = %.3f'
                       %(contingency.axes[0].name, index, row.axes[0].name,
                         index2, prob))
         c, p, dof, expected = scs.chi2_contingency(contingency,
                                                    correction=False)
-        print('c: %f, p: %.2E, dof: %d' %(c, p, dof))
+        print('\nChi-square Test of Independence:')
+        print('chi2 = %f, p = %.2E, dof = %d' %(c, p, dof))
         print('')
 
 
@@ -84,18 +89,11 @@ def main():
     Runs feature processing scripts to analuze the cleaned data from
     (../processed).
     """
-    logger = logging.getLogger(__name__)
-
-    logger.info('running second investigation analysis')
     manager = Manager(get_data_file())
     manager.second_investigation()
-    logger.info('second investigation analysis complete')
 
 
 if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
     # store necessary paths
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     data_dir = os.path.join(project_dir, 'data')

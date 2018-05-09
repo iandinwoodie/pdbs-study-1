@@ -1,4 +1,3 @@
-import logging
 import os
 import sqlite3
 import pandas as pd
@@ -78,10 +77,14 @@ class Manager(object):
         for label in labels:
             df[label] = pd.to_numeric(df[label])
         ## Determine relationships.
+        print('\nGeneral Investigation:')
+        print('\nSums:')
+        for index, row in df.sum().iteritems():
+            print('%s = %d' %(index,row))
         print('\nModes:')
-        print(df.mode())
-        print(df.count())
-        print('')
+        for index, row in df.mode().iteritems():
+            print('%s = %d' %(index,row))
+        #print(df.count())
         combos = list(combinations(range(0,12), r=2))
         for combo in combos:
             contingency = pd.crosstab(df[labels[combo[0]]],
@@ -89,19 +92,10 @@ class Manager(object):
             c, p, dof, expected = scs.chi2_contingency(contingency,
                                                        correction=False)
             if p < 0.05:
-                print('\nChi2 Contingency: %s - %s'
+                print('\nChi-squared Test of Independence: (%s|%s)'
                       %(labels[combo[0]], labels[combo[1]]))
-                print('c: %f, p: %.2E, dof: %d' %(c, p, dof))
-                print('')
-        #corr = df.corr()
-        #print(corr)
-        #sns.set(style='white')
-        #mask = np.zeros_like(corr, dtype=np.bool)
-        #mask[np.triu_indices_from(mask)] = True
-        #f, ax = plt.subplots(figsize=(11, 9))
-        #cmap = sns.diverging_palette(220, 10, as_cmap=True)
-        #sns.heatmap(corr, mask=mask, cmap=cmap, vmax=0.3, center=0,
-        #            square=True, linewidths=0.5, cbar_kws={'shrink': 0.5})
+                print('chi2 = %f, p = %.2E, dof = %d' %(c, p, dof))
+        print('')
 
 
 def main():
@@ -109,18 +103,11 @@ def main():
     Runs feature processing scripts to analuze the cleaned data from
     (../processed).
     """
-    logger = logging.getLogger(__name__)
-
-    logger.info('running general investigation analysis')
     manager = Manager(get_data_file())
     manager.general_category_investigation()
-    logger.info('general investigation analysis complete')
 
 
 if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
     # store necessary paths
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     data_dir = os.path.join(project_dir, 'data')

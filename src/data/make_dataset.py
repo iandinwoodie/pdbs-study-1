@@ -38,7 +38,7 @@ class Database(object):
 
     def create_table(self, table, header):
         """Create a table in the database."""
-        fields = ' text, '.join(header)
+        fields = ' TEXT, '.join(header)
         query = 'CREATE TABLE %s (%s);' %(table, fields)
         self.__cursor.execute(query)
 
@@ -260,6 +260,39 @@ class Datastore(object):
         return self.__users
 
 
+class DatabaseModifier(object):
+
+    def __init__(self):
+        """Initialize a DatabaseModifier object."""
+        self.__conn = sqlite3.connect(processed_filepath)
+        self.__cursor = self.__conn.cursor()
+        self.__modifySoilTypes()
+
+    def __getValues(self, field):
+        query = 'SELECT record_id, %s FROM dogs;' %(field)
+        self.__cursor.execute(query)
+        return self.__cursor.fetchall()
+
+    def __addColumn(self, field):
+        query = 'ALTER TABLE dogs ADD COLUMN %s TEXT;' %(field)
+        self.__cursor.execute(query)
+
+    def __addValue(self, record_id, field, value):
+        query = ('UPDATE dogs SET  %s=%s WHERE record_id=%s;'
+                 %(field, value, record_id))
+        self.__cursor.execute(query)
+
+    def __modifySoilTypes(self):
+        field = 'q06_soil_type'
+        values = self.__getValues(field)
+        for i in range(1, 4):
+            self.__addColumn(field + '_%s'%i)
+        for pair in values:
+            if pair[1]:
+                self.__addValue(pair[0], field + '_%s'%pair[1], 1)
+        self.__conn.commit()
+
+
 def main():
     """
     Runs data processing scripts to turn raw data from (../raw) into
@@ -278,6 +311,9 @@ def main():
     manager.populate_tables()
     logger.info('recording metrics')
     manager.write_metrics()
+
+    logger.info('modifying database')
+    modifier = DatabaseModifier()
 
     logger.info('dataset generation complete')
 

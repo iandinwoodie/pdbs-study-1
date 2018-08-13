@@ -274,7 +274,7 @@ class DatabaseModifier(object):
         return self.__cursor.fetchall()
 
     def __addColumn(self, field):
-        query = 'ALTER TABLE dogs ADD COLUMN %s TEXT;' %(field)
+        query = 'ALTER TABLE dogs ADD COLUMN %s TEXT DEFAULT 0;' %(field)
         self.__cursor.execute(query)
 
     def __addValue(self, record_id, field, value):

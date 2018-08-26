@@ -158,8 +158,11 @@ class DogEntry(object):
         self.__data = data
         self.__verify_data()
         self.__data.insert(0, uid)
+        # Convert breed reference index to breed.
         if data[4]:
             data[4] = BREED_REFERENCE[data[4]]
+        if data[8] == '4':
+            data[8] = '1'
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""

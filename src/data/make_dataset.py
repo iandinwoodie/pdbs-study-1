@@ -15,6 +15,20 @@ def get_data_file():
         quit()
 
 
+def get_breed_dict():
+    with open(data_dictionary, newline='', encoding='latin1') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',')
+        for row in csvreader:
+            if row[0] == 'purebred_breed_1a':
+                combo_list = list(row[5].split("|"))
+                break
+    breeds = {}
+    for combo in combo_list:
+        sep = list(combo.split(", "))
+        breeds[sep[0].strip()] = sep[1].strip()
+    return breeds
+
+
 class Database(object):
 
     def __init__(self, path):
@@ -144,6 +158,8 @@ class DogEntry(object):
         self.__data = data
         self.__verify_data()
         self.__data.insert(0, uid)
+        if data[4]:
+            data[4] = BREED_REFERENCE[data[4]]
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""
@@ -322,12 +338,14 @@ if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-    # store necessary paths
+    # store necessary paths and variables
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     data_dir = os.path.join(project_dir, 'data')
     raw_filepath = os.path.join(data_dir, 'raw', 'raw.csv')
     processed_filepath = os.path.join(data_dir, 'processed', 'processed.db')
     metrics_filepath = os.path.join(project_dir, 'reports', 'metrics.txt')
+    data_dictionary = os.path.join(project_dir, 'references', 'data_dictionary.csv')
+    BREED_REFERENCE=get_breed_dict()
 
     main()
 

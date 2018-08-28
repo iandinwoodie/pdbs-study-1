@@ -15,6 +15,76 @@ def get_data_file():
         quit()
 
 
+class Age(object):
+
+    def __init__(self, string, unit):
+        self.__orig = string
+        self.__age = ''
+        self.__string = string.lower()
+        self.__unit = unit
+        self.__unit_cnt = 0
+
+    def parse_age(self):
+        passed = ['deceased', 'died']
+        for item in passed:
+            if item in self.__string:
+                return True
+        try:
+            age = float(self.__string)
+            if self.__unit == 'y':
+                age = age * 12
+            elif self.__unit == 'w':
+                age = age / 4
+            self.__age = age
+            return True
+        except ValueError:
+            return False
+
+    def parse_unit(self):
+        self.__string = self.__string.replace('old', '')
+        unit_dict = {
+            'months': 'm', 'mos': 'm', 'years': 'y', 'weeks': 'w', 'yrs': 'y'}
+        for key in unit_dict:
+            if key in self.__string:
+                self.__string = self.__string.replace(key, '')
+                self.__unit = unit_dict[key]
+                self.__unit_cnt += 1
+        if self.__unit_cnt > 1:
+            print("Error: multiple units for \"%s\"" %self.__orig)
+            self.__string = self.__orig
+
+    def parse_value(self):
+        conv = {
+            ',': '.', '1/2': '.5', 'three': '3', 'five': '5', 'seven': '7',
+            'eleven': '11', '&': '', '?': '', 'ish': '', 'estimated': '',
+            'nine': '9', 'about': ''}
+        for key in conv:
+            if key in self.__string:
+                self.__string = self.__string.replace(key, conv[key])
+        self.__string = self.__string.replace(' ', '')
+
+    def get_age(self):
+        return self.__age
+
+    def failed_conversion(self):
+        print('failed to convert (mod: %s, orig: %s)' %(self.__string, self.__orig))
+        return ''
+
+
+def convert_age_string(age_string, unit):
+    """Covert a given age string to an age in months."""
+    age = Age(age_string, unit)
+    if age.parse_age():
+        return age.get_age()
+    age.parse_unit()
+    if age.parse_age():
+        return age.get_age()
+    age.parse_value()
+    if age.parse_age():
+        return age.get_age()
+    return age.failed_conversion()
+
+
 def get_breed_dict():
     with open(data_dictionary, newline='', encoding='latin1') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
@@ -163,6 +233,14 @@ class DogEntry(object):
             data[4] = BREED_REFERENCE[data[4]]
         if data[8] == '4':
             data[8] = '1'
+        # 13 = months, 14 = years
+        if data[13]:
+            data[13] = convert_age_string(data[13], "m")
+        elif data[14]:
+            data[13] = convert_age_string(data[14], "y")
+        if not data[13]:
+            print(self.__name)
+        
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""

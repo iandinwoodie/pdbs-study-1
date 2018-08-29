@@ -5,6 +5,7 @@ import re
 import shutil
 import sqlite3
 
+gcnt = 0
 
 def get_data_file():
     """Verify that the input data file exists."""
@@ -13,6 +14,19 @@ def get_data_file():
     else:
         print('Error: no scrubbable data file exists.')
         quit()
+
+
+def get_age_from_string(string, unit):
+    global gcnt
+    try:
+        age = float(string)
+        if unit == 'y':
+            age = age * 12
+        gcnt += 1
+        print(gcnt)
+        return age
+    except ValueError:
+        return ''
 
 
 class Age(object):
@@ -235,11 +249,13 @@ class DogEntry(object):
             data[8] = '1'
         # 13 = months, 14 = years
         if data[13]:
-            data[13] = convert_age_string(data[13], "m")
+            age = data[13]
+            unit = 'm'
+            data[13] = get_age_from_string(age, unit)
         elif data[14]:
-            data[13] = convert_age_string(data[14], "y")
-        if not data[13]:
-            print(self.__name)
+            age = data[14]
+            unit = 'y'
+            data[13] = get_age_from_string(age, unit)
         
 
     def __verify_data(self):

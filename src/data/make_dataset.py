@@ -5,7 +5,6 @@ import re
 import shutil
 import sqlite3
 
-gcnt = 0
 
 def get_data_file():
     """Verify that the input data file exists."""
@@ -14,19 +13,6 @@ def get_data_file():
     else:
         print('Error: no scrubbable data file exists.')
         quit()
-
-
-def get_age_from_string(string, unit):
-    global gcnt
-    try:
-        age = float(string)
-        if unit == 'y':
-            age = age * 12
-        gcnt += 1
-        print(gcnt)
-        return age
-    except ValueError:
-        return ''
 
 
 class Age(object):
@@ -39,10 +25,6 @@ class Age(object):
         self.__unit_cnt = 0
 
     def parse_age(self):
-        passed = ['deceased', 'died']
-        for item in passed:
-            if item in self.__string:
-                return True
         try:
             age = float(self.__string)
             if self.__unit == 'y':
@@ -67,16 +49,6 @@ class Age(object):
             print("Error: multiple units for \"%s\"" %self.__orig)
             self.__string = self.__orig
 
-    def parse_value(self):
-        conv = {
-            ',': '.', '1/2': '.5', 'three': '3', 'five': '5', 'seven': '7',
-            'eleven': '11', '&': '', '?': '', 'ish': '', 'estimated': '',
-            'nine': '9', 'about': ''}
-        for key in conv:
-            if key in self.__string:
-                self.__string = self.__string.replace(key, conv[key])
-        self.__string = self.__string.replace(' ', '')
-
     def get_age(self):
         return self.__age
 
@@ -91,9 +63,6 @@ def convert_age_string(age_string, unit):
     if age.parse_age():
         return age.get_age()
     age.parse_unit()
-    if age.parse_age():
-        return age.get_age()
-    age.parse_value()
     if age.parse_age():
         return age.get_age()
     return age.failed_conversion()
@@ -251,12 +220,11 @@ class DogEntry(object):
         if data[13]:
             age = data[13]
             unit = 'm'
-            data[13] = get_age_from_string(age, unit)
+            data[13] = convert_age_string(age, unit)
         elif data[14]:
             age = data[14]
             unit = 'y'
-            data[13] = get_age_from_string(age, unit)
-        
+            data[13] = convert_age_string(age, unit)
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""

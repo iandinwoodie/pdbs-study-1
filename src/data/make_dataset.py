@@ -27,7 +27,7 @@ def parse_contents(line, unit):
         # First check for purely digit strings.
         months = parse_pure(line, unit)
         if months > 0:
-            return str(months)
+            return ('%.2f' %months)
         # Convert fractions to decimals.
         line = parse_fraction(line)
         if not line:
@@ -52,7 +52,7 @@ def parse_contents(line, unit):
         months = months1 + months2 + months3 + months4
         if months == 0:
             raise ValueError('No parsed value: %s' %original)
-        return str(months)
+        return ('%.2f' %months)
     except ValueError as err:
         print(err.args)
         return ''

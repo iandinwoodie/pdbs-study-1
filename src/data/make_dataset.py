@@ -15,57 +15,162 @@ def get_data_file():
         quit()
 
 
-class Age(object):
-
-    def __init__(self, string, unit):
-        self.__orig = string
-        self.__age = ''
-        self.__string = string.lower()
-        self.__unit = unit
-        self.__unit_cnt = 0
-
-    def parse_age(self):
-        try:
-            age = float(self.__string)
-            if self.__unit == 'y':
-                age = age * 12
-            elif self.__unit == 'w':
-                age = age / 4
-            self.__age = age
-            return True
-        except ValueError:
-            return False
-
-    def parse_unit(self):
-        self.__string = self.__string.replace('old', '')
-        unit_dict = {
-            'months': 'm', 'mos': 'm', 'years': 'y', 'weeks': 'w', 'yrs': 'y'}
-        for key in unit_dict:
-            if key in self.__string:
-                self.__string = self.__string.replace(key, '')
-                self.__unit = unit_dict[key]
-                self.__unit_cnt += 1
-        if self.__unit_cnt > 1:
-            print("Error: multiple units for \"%s\"" %self.__orig)
-            self.__string = self.__orig
-
-    def get_age(self):
-        return self.__age
-
-    def failed_conversion(self):
-        print('failed to convert (mod: %s, orig: %s)' %(self.__string, self.__orig))
+def parse_contents(line, unit):
+    try:
+        original = line
+        # Make lowercase and remove whitespace.
+        line = line.lower().replace(' ', '')
+        line = convert_words(line)
+        # Return no result when no digits in input.
+        if not bool(re.search('\d', line)):
+            raise ValueError('No digits: %s' %original)
+        # First check for purely digit strings.
+        months = parse_pure(line, unit)
+        if months > 0:
+            return str(months)
+        # Convert fractions to decimals.
+        line = parse_fraction(line)
+        if not line:
+            raise ValueError('Invalid fractions: %s' %original)
+        # Convert ranges to averages.
+        line = parse_range(line)
+        if not line:
+            raise ValueError('Invalid range: %s' %original)
+        # Parse out weeks, months, and years.
+        months1, line = parse_weeks(line)
+        months2, line = parse_months(line)
+        months3, line = parse_years(line)
+        # Perform addition when applicable.
+        line = parse_math(line)
+        # Account for european use of comma.
+        line = line.replace(',', '.')
+        # Parse out any formed purely digit strings.
+        months4, line = parse_impure(line, unit)
+        # If digits remain, the input is invalid.
+        if bool(re.search('\d', line)):
+            raise ValueError('Extra digits: %s' %original)
+        months = months1 + months2 + months3 + months4
+        if months == 0:
+            raise ValueError('No parsed value: %s' %original)
+        return str(months)
+    except ValueError as err:
+        print(err.args)
         return ''
 
 
-def convert_age_string(age_string, unit):
-    """Covert a given age string to an age in months."""
-    age = Age(age_string, unit)
-    if age.parse_age():
-        return age.get_age()
-    age.parse_unit()
-    if age.parse_age():
-        return age.get_age()
-    return age.failed_conversion()
+def convert_words(line):
+    words = {'half': '.5', 'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5',
+             'six': '6', 'seven': '7', 'eight': '8', 'nine': '9', 'ten': '10',
+             'eleven': '11', 'twelve': '12'}
+    for word in words:
+        if word in line:
+            line = line.replace(word, words[word])
+    return line
+
+
+def parse_pure(line, unit):
+    months = 0
+    try:
+        if unit == 'y':
+            months = float(line) * 12
+        else:
+            months = float(line)
+        return months
+    except ValueError:
+        return 0
+
+
+def parse_fraction(line):
+    fractions = {'1/2': '.5', '1/12': '.083', '1/3': '.33', '1/4': '.25',
+                 '3/4': '.75', '1/5': '.2'}
+    for frac in fractions:
+        if frac in line:
+            line = line.replace(frac, fractions[frac])
+    # Clear the lines of invalid fractions.
+    if bool(re.search('\/', line)):
+        return ''
+    return line
+
+
+def parse_range(line):
+    opers = ['-', 'or', 'to', '..']
+    for oper in opers:
+        if oper in line:
+            if oper == '..':
+                oper = '\.\.'
+            pattern = '([0-9\.]+){}([0-9\.]+)'.format(oper)
+            m = re.search(pattern, line)
+            if m:
+                lhs = float(m.group(1))
+                rhs = float(m.group(2))
+                # If the rhs is lower, and the operator is '-', then the rhs is additive.
+                if lhs > rhs:
+                    avg = lhs + rhs
+                else:
+                    avg = (lhs + rhs) / 2
+                line = re.sub(pattern, str(avg), line)
+    return line
+
+
+def parse_weeks(line):
+    months = 0
+    pattern = '([0-9\.]+)(weeks)+'
+    m = re.search(pattern, line)
+    if m:
+        months = float(m.group(1)) / 4
+        line = re.sub(pattern, '', line)
+    return months, line
+
+
+def parse_months(line):
+    months = 0
+    pattern = '([0-9\.]+)(months|mon)+'
+    m = re.search(pattern, line)
+    if m:
+        months = float(m.group(1))
+        line = re.sub(pattern, '', line)
+    return months, line
+
+
+def parse_years(line):
+    months = 0
+    pattern = '([0-9\.]+).?([y,e,a,r,s]{3}|y)+'
+    m = re.search(pattern, line)
+    if m:
+        months = float(m.group(1)) * 12
+        line = re.sub(pattern, '', line)
+    return months, line
+
+
+def parse_math(line):
+    opers = ['+', 'anda', 'and', '&']
+    for oper in opers:
+        if oper in line:
+            pattern = '([0-9\.]+){}([0-9\.]+)'.format(oper)
+            m = re.search(pattern, line)
+            if m:
+                lhs = float(m.group(1))
+                rhs = float(m.group(2))
+                result = lhs + rhs
+                line = re.sub(pattern, str(result), line)
+    return line
+
+
+def parse_impure(line, unit):
+    months = 0
+    pattern = '([0-9]+\.[0-9]+|[0-9]+)'
+    m = re.findall(pattern, line)
+    if len(m) == 1:
+        try:
+            if unit == 'y':
+                months = float(m[0]) * 12
+            else:
+                months = float(m[0])
+            line = re.sub(pattern, '', line)
+            return months, line
+        except ValueError:
+            return 0, line
+    return months, line
 
 
 def get_breed_dict():
@@ -218,13 +323,10 @@ class DogEntry(object):
             data[8] = '1'
         # 13 = months, 14 = years
         if data[13]:
-            age = data[13]
-            unit = 'm'
-            data[13] = convert_age_string(age, unit)
+            data[13] = parse_contents(data[13], 'm')
         elif data[14]:
-            age = data[14]
-            unit = 'y'
-            data[13] = convert_age_string(age, unit)
+            data[13] = parse_contents(data[14], 'y')
+            data[14] = ''
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""

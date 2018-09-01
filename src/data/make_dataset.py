@@ -333,6 +333,23 @@ class DogEntry(object):
         elif data[14]:
             data[13] = parse_contents(data[14], 'y')
             data[14] = ''
+        # 18 = months, 19 = years
+        if data[18]:
+            data[18] = parse_contents(data[18], 'm')
+        elif data[19]:
+            data[18] = parse_contents(data[19], 'y')
+            data[19] = ''
+        if data[13] and data[18]:
+            if float(data[18]) > float(data[13]):
+                print('Neutering older than current age: %f > %f'
+                      %(float(data[18]), float(data[13])))
+                data[18] = ''
+        if data[18]:
+            if float(data[18]) < 2:
+                print('Neutering below minimum allowable age: %f < 2 months'
+                      %(float(data[18])))
+                data[18] = ''
+
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""

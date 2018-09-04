@@ -15,6 +15,184 @@ def get_data_file():
         quit()
 
 
+def parse_contents(line, unit):
+    try:
+        original = line
+        # Make lowercase and remove whitespace.
+        line = line.lower().replace(' ', '')
+        line = convert_words(line)
+        # Return no result when no digits in input.
+        if not bool(re.search('\d', line)):
+            raise ValueError('No digits: %s' %original)
+        # First check for purely digit strings.
+        months = parse_pure(line, unit)
+        if months > 0:
+            # Eliminate ages that are significantly older than the world record.
+            if months > 384:
+                raise ValueError('Extreme outlier: %s %s' %(original, unit))
+            return ('%.2f' %months)
+        # Convert fractions to decimals.
+        line = parse_fraction(line)
+        if not line:
+            raise ValueError('Invalid fractions: %s' %original)
+        # Convert ranges to averages.
+        line = parse_range(line)
+        if not line:
+            raise ValueError('Invalid range: %s' %original)
+        # Parse out weeks, months, and years.
+        months1, line = parse_weeks(line)
+        months2, line = parse_months(line)
+        months3, line = parse_years(line)
+        # Perform addition when applicable.
+        line = parse_math(line)
+        # Account for european use of comma.
+        line = line.replace(',', '.')
+        # Parse out any formed purely digit strings.
+        months4, line = parse_impure(line, unit)
+        # If digits remain, the input is invalid.
+        if bool(re.search('\d', line)):
+            raise ValueError('Extra digits: %s' %original)
+        months = months1 + months2 + months3 + months4
+        if months == 0:
+            raise ValueError('No parsed value: %s' %original)
+        # Eliminate ages that are significantly older than the world record.
+        if months > 384:
+            raise ValueError('Extreme outlier: %s %s' %(original, unit))
+        return ('%.2f' %months)
+    except ValueError as err:
+        print(err.args)
+        return ''
+
+
+def convert_words(line):
+    words = {'half': '.5', 'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5',
+             'six': '6', 'seven': '7', 'eight': '8', 'nine': '9', 'ten': '10',
+             'eleven': '11', 'twelve': '12'}
+    for word in words:
+        if word in line:
+            line = line.replace(word, words[word])
+    return line
+
+
+def parse_pure(line, unit):
+    months = 0
+    try:
+        if unit == 'y':
+            months = float(line) * 12
+        else:
+            months = float(line)
+        return months
+    except ValueError:
+        return 0
+
+
+def parse_fraction(line):
+    fractions = {'1/2': '.5', '1/12': '.083', '1/3': '.33', '1/4': '.25',
+                 '3/4': '.75', '1/5': '.2'}
+    for frac in fractions:
+        if frac in line:
+            line = line.replace(frac, fractions[frac])
+    # Clear the lines of invalid fractions.
+    if bool(re.search('\/', line)):
+        return ''
+    return line
+
+
+def parse_range(line):
+    opers = ['-', 'or', 'to', '..']
+    for oper in opers:
+        if oper in line:
+            if oper == '..':
+                oper = '\.\.'
+            pattern = '([0-9\.]+){}([0-9\.]+)'.format(oper)
+            m = re.search(pattern, line)
+            if m:
+                lhs = float(m.group(1))
+                rhs = float(m.group(2))
+                # If the rhs is lower, and the operator is '-', then the rhs is additive.
+                if lhs > rhs:
+                    avg = lhs + rhs
+                else:
+                    avg = (lhs + rhs) / 2
+                line = re.sub(pattern, str(avg), line)
+    return line
+
+
+def parse_weeks(line):
+    months = 0
+    pattern = '([0-9\.]+)(weeks)+'
+    m = re.search(pattern, line)
+    if m:
+        months = float(m.group(1)) / 4
+        line = re.sub(pattern, '', line)
+    return months, line
+
+
+def parse_months(line):
+    months = 0
+    pattern = '([0-9\.]+)(months|mon)+'
+    m = re.search(pattern, line)
+    if m:
+        months = float(m.group(1))
+        line = re.sub(pattern, '', line)
+    return months, line
+
+
+def parse_years(line):
+    months = 0
+    pattern = '([0-9\.]+).?([y,e,a,r,s]{3}|y)+'
+    m = re.search(pattern, line)
+    if m:
+        months = float(m.group(1)) * 12
+        line = re.sub(pattern, '', line)
+    return months, line
+
+
+def parse_math(line):
+    opers = ['+', 'anda', 'and', '&']
+    for oper in opers:
+        if oper in line:
+            pattern = '([0-9\.]+){}([0-9\.]+)'.format(oper)
+            m = re.search(pattern, line)
+            if m:
+                lhs = float(m.group(1))
+                rhs = float(m.group(2))
+                result = lhs + rhs
+                line = re.sub(pattern, str(result), line)
+    return line
+
+
+def parse_impure(line, unit):
+    months = 0
+    pattern = '([0-9]+\.[0-9]+|[0-9]+)'
+    m = re.findall(pattern, line)
+    if len(m) == 1:
+        try:
+            if unit == 'y':
+                months = float(m[0]) * 12
+            else:
+                months = float(m[0])
+            line = re.sub(pattern, '', line)
+            return months, line
+        except ValueError:
+            return 0, line
+    return months, line
+
+
+def get_breed_dict():
+    with open(data_dictionary, newline='', encoding='latin1') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',')
+        for row in csvreader:
+            if row[0] == 'purebred_breed_1a':
+                combo_list = list(row[5].split("|"))
+                break
+    breeds = {}
+    for combo in combo_list:
+        sep = list(combo.split(", "))
+        breeds[sep[0].strip()] = sep[1].strip()
+    return breeds
+
+
 class Database(object):
 
     def __init__(self, path):
@@ -144,6 +322,34 @@ class DogEntry(object):
         self.__data = data
         self.__verify_data()
         self.__data.insert(0, uid)
+        # Convert breed reference index to breed.
+        if data[4]:
+            data[4] = BREED_REFERENCE[data[4]]
+        if data[8] == '4':
+            data[8] = '1'
+        # 13 = months, 14 = years
+        if data[13]:
+            data[13] = parse_contents(data[13], 'm')
+        elif data[14]:
+            data[13] = parse_contents(data[14], 'y')
+            data[14] = ''
+        # 18 = months, 19 = years
+        if data[18]:
+            data[18] = parse_contents(data[18], 'm')
+        elif data[19]:
+            data[18] = parse_contents(data[19], 'y')
+            data[19] = ''
+        if data[13] and data[18]:
+            if float(data[18]) > float(data[13]):
+                print('Neutering older than current age: %f > %f'
+                      %(float(data[18]), float(data[13])))
+                data[18] = ''
+        if data[18]:
+            if float(data[18]) < 2:
+                print('Neutering below minimum allowable age: %f < 2 months'
+                      %(float(data[18])))
+                data[18] = ''
+
 
     def __verify_data(self):
         """Verify the recorded dog entry data."""
@@ -322,12 +528,14 @@ if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-    # store necessary paths
+    # store necessary paths and variables
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     data_dir = os.path.join(project_dir, 'data')
     raw_filepath = os.path.join(data_dir, 'raw', 'raw.csv')
     processed_filepath = os.path.join(data_dir, 'processed', 'processed.db')
     metrics_filepath = os.path.join(project_dir, 'reports', 'metrics.txt')
+    data_dictionary = os.path.join(project_dir, 'references', 'data_dictionary.csv')
+    BREED_REFERENCE=get_breed_dict()
 
     main()
 

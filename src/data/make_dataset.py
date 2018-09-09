@@ -60,7 +60,7 @@ def parse_contents(line, unit):
             raise ValueError('Extreme outlier: %s %s' %(original, unit))
         return ('%.2f' %months)
     except ValueError as err:
-        print(err.args)
+        #print(err.args)
         return ''
 
 
@@ -325,30 +325,44 @@ class DogEntry(object):
         # Convert breed reference index to breed.
         if data[4]:
             data[4] = BREED_REFERENCE[data[4]]
+        # Simplify acquisition source.
         if data[8] == '4':
             data[8] = '1'
-        # 13 = months, 14 = years
+        # Convert current age to months.
         if data[13]:
             data[13] = parse_contents(data[13], 'm')
         elif data[14]:
             data[13] = parse_contents(data[14], 'y')
             data[14] = ''
-        # 18 = months, 19 = years
+        # Convert neutered age to months.
         if data[18]:
             data[18] = parse_contents(data[18], 'm')
         elif data[19]:
             data[18] = parse_contents(data[19], 'y')
             data[19] = ''
+        # Convert onset age to months.
+        rnum = 26
+        if data[rnum]:
+            data[rnum] = parse_contents(data[rnum], 'm')
+        elif data[rnum+1]:
+            data[rnum] = parse_contents(data[rnum+1], 'y')
+            data[rnum+1] = ''
+        # Age verification.
         if data[13] and data[18]:
             if float(data[18]) > float(data[13]):
-                print('Neutering older than current age: %f > %f'
-                      %(float(data[18]), float(data[13])))
+                print('Name: %s, Error: Neutering older than current age: %f > %f'
+                      %(data[1], float(data[18]), float(data[13])))
                 data[18] = ''
         if data[18]:
             if float(data[18]) < 2:
-                print('Neutering below minimum allowable age: %f < 2 months'
-                      %(float(data[18])))
+                print('Name: %s, Error: Neutering below minimum allowable age: %f < 2 months'
+                      %(data[1], float(data[18])))
                 data[18] = ''
+        if data[13] and data[26]:
+            if float(data[26]) > float(data[13]):
+                print('Name: %s, Error: Onset age older than current age: %f > %f'
+                      %(data[1], float(data[26]), float(data[13])))
+                data[26] = ''
 
 
     def __verify_data(self):

@@ -489,7 +489,7 @@ class DatabaseModifier(object):
         self.__modifySoilTypes()
 
     def __getValues(self, field):
-        query = 'SELECT record_id, %s FROM dogs;' %(field)
+        query = 'SELECT record_id, dog_name, %s FROM dogs;' %(field)
         self.__cursor.execute(query)
         return self.__cursor.fetchall()
 
@@ -497,9 +497,9 @@ class DatabaseModifier(object):
         query = 'ALTER TABLE dogs ADD COLUMN %s TEXT DEFAULT 0;' %(field)
         self.__cursor.execute(query)
 
-    def __addValue(self, record_id, field, value):
-        query = ('UPDATE dogs SET  %s=%s WHERE record_id=%s;'
-                 %(field, value, record_id))
+    def __addValue(self, record_id, dog_name, field, value):
+        query = ('UPDATE dogs SET  %s=%s WHERE record_id=%s AND dog_name="%s";'
+                 %(field, value, record_id, dog_name))
         self.__cursor.execute(query)
 
     def __modifySoilTypes(self):
@@ -508,8 +508,8 @@ class DatabaseModifier(object):
         for i in range(1, 4):
             self.__addColumn(field + '_%s'%i)
         for pair in values:
-            if pair[1]:
-                self.__addValue(pair[0], field + '_%s'%pair[1], 1)
+            if pair[2]:
+                self.__addValue(pair[0], pair[1], field + '_%s'%pair[2], 1)
         self.__conn.commit()
 
 

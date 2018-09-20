@@ -1,0 +1,103 @@
+\documentclass[varwidth=\maxdimen]{standalone}
+\usepackage{booktabs}
+\newcommand{\subrow}[1]{\hspace{1.25em}#1}
+\begin{document}
+\begin{tabular}[t]{lrr}
+\toprule
+Behavior problem &  Count &  Prevalence (\%) \\
+\midrule
+Fear/Anxiety \\
+  \subrow{Crowd phobia}                        &      784.0 &           19.06 \\
+  \subrow{Situational anxiety}                 &      741.0 &           18.01 \\
+  \subrow{Noise phobia}                        &      716.0 &           17.40 \\
+  \subrow{Veterinarian phobia}                 &      684.0 &           16.63 \\
+  \subrow{Thunderstorm phobia}                 &      573.0 &           13.93 \\
+  \subrow{Separation anxiety}                  &      550.0 &           13.37 \\
+  \subrow{Travel anxiety}                      &      438.0 &           10.65 \\
+  \subrow{Phobia of other dogs}                &      428.0 &           10.40 \\
+  \subrow{Generalized anxiety}                 &      359.0 &            8.73 \\
+  \subrow{Other}                               &      231.0 &            5.61 \\
+  \subrow{PTSD}                                &      176.0 &            4.28 \\
+Aggression \\
+  \subrow{Unfamiliar dogs on walks (on lead)}  &      674.0 &           16.38 \\
+  \subrow{Another dog in the home}             &      447.0 &           10.87 \\
+  \subrow{Stangers visiting the home}          &      391.0 &            9.50 \\
+  \subrow{Unfamiliar dogs on walks (off lead)} &      371.0 &            9.02 \\
+  \subrow{Unfamiliar dogs visiting the home}   &      371.0 &            9.02 \\
+  \subrow{Stangers away from the home}         &      325.0 &            7.90 \\
+  \subrow{Familiar people in the home}         &      296.0 &            7.19 \\
+  \subrow{Animals other than dogs in the home} &      172.0 &            4.18 \\
+  \subrow{Veterinarians}                       &      159.0 &            3.86 \\
+  \subrow{Groomers}                            &       55.0 &            1.34 \\
+  \subrow{Trainers}                            &       34.0 &            0.83 \\
+Jumping \\
+  \subrow{Family members}                      &      915.0 &           22.24 \\
+  \subrow{Owner}                               &      763.0 &           18.55 \\
+  \subrow{Strangers}                           &      694.0 &           16.87 \\
+Excessive barking \\
+  \subrow{At tiggers (inside)}                 &      498.0 &           12.11 \\
+  \subrow{At triggers (outside)}               &      497.0 &           12.08 \\
+  \subrow{Owner present}                       &      402.0 &            9.77 \\
+  \subrow{To get attention}                    &      304.0 &            7.39 \\
+  \subrow{Owner away}                          &      214.0 &            5.20 \\
+  \subrow{During car rides}                    &       98.0 &            2.38 \\
+Consumption of feces \\
+  \subrow{Other species'}                      &      420.0 &           10.21 \\
+  \subrow{Other dogs'}                         &      416.0 &           10.11 \\
+  \subrow{Their own}                           &      344.0 &            8.36 \\
+Compulsion \\
+  \subrow{Licking of wrist/hock}               &      335.0 &            8.14 \\
+  \subrow{Tail chasing}                        &      126.0 &            3.06 \\
+  \subrow{Digging in yard}                     &      106.0 &            2.58 \\
+  \subrow{Other}                               &       97.0 &            2.36 \\
+  \subrow{Tennis ball fetish}                  &       87.0 &            2.11 \\
+  \subrow{Spinning}                            &       82.0 &            1.99 \\
+  \subrow{Nail biting}                         &       73.0 &            1.77 \\
+  \subrow{Shadow/light chasing}                &       65.0 &            1.58 \\
+  \subrow{Sucking flank region/blankets}       &       58.0 &            1.41 \\
+  \subrow{Running in geometric patterns}       &       43.0 &            1.05 \\
+  \subrow{Collecting/arranging objects}        &       39.0 &            0.95 \\
+  \subrow{Stone/rock chewing}                  &       32.0 &            0.78 \\
+  \subrow{Fly snapping}                        &       25.0 &            0.61 \\
+\bottomrule
+\end{tabular}
+\begin{tabular}[t]{lrr}
+\toprule
+Behavior problem &  Count &  Prevalence (\%) \\
+\midrule
+House soiling \\
+  \subrow{Owner away}                          &      451.0 &           10.96 \\
+  \subrow{Owner present}                       &      420.0 &           10.21 \\
+  \subrow{Urine and feces}                     &      398.0 &            9.67 \\
+  \subrow{Specific locations}                  &      344.0 &            8.36 \\
+  \subrow{Anywhere}                            &      292.0 &            7.10 \\
+  \subrow{Urine}                               &      173.0 &            4.21 \\
+  \subrow{Excited/overwhelmed}                 &      127.0 &            3.09 \\
+  \subrow{Feces}                               &       36.0 &            0.88 \\
+Rolling in repulsive materials \\
+  \subrow{Dead Stuff}                          &      436.0 &           10.60 \\
+  \subrow{Feces}                               &      321.0 &            7.80 \\
+  \subrow{Urine}                               &       72.0 &            1.75 \\
+  \subrow{Garbage}                             &       66.0 &            1.60 \\
+Overactivity and hyperactivity \\
+  \subrow{Difficulty settling}                 &      314.0 &            7.63 \\
+  \subrow{Constant moving/jumping}             &      276.0 &            6.71 \\
+  \subrow{Impulsive}                           &      270.0 &            6.56 \\
+  \subrow{Highly distractible}                 &      224.0 &            5.44 \\
+Destructive behavior \\
+  \subrow{Owner is away}                       &      397.0 &            9.65 \\
+  \subrow{Owner is home}                       &      222.0 &            5.40 \\
+Running away and escaping \\
+  \subrow{Escapes from home}                   &      239.0 &            5.81 \\
+  \subrow{Escapes when out}                    &      207.0 &            5.03 \\
+  \subrow{Escapes from confinement}            &      192.0 &            4.67 \\
+  \subrow{Returns home after escape}           &      147.0 &            3.57 \\
+Mounting and humping \\
+  \subrow{Familiar dogs}                       &      259.0 &            6.30 \\
+  \subrow{People}                              &      151.0 &            3.67 \\
+  \subrow{Unfamiliar dogs}                     &      110.0 &            2.67 \\
+  \subrow{Inanimate objects}                   &      102.0 &            2.48 \\
+\bottomrule
+\end{tabular}
+
+\end{document}

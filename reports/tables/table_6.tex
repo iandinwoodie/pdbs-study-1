@@ -1,6 +1,9 @@
-\documentclass[varwidth=\maxdimen]{standalone}\usepackage{booktabs}\begin{document}\begin{tabular}{lrr}
+\documentclass[varwidth=\maxdimen]{standalone}\usepackage{booktabs,multirow}\begin{document}
+\begin{tabular}{lrr}
 \toprule
-Behavior problem &  Purebred &  Non-purebred \\
+\multirow{2}{*}{Behavior problem}  & \multicolumn{2}{c}{Prevalence (\%)} \\
+\cmidrule(lr){2-3}
+&  Purebred &  Non-purebred \\
 \midrule
 Aggression                    &        26 &            36 \\
 Fear/Anxiety                  &        38 &            53 \\

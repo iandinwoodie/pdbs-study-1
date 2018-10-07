@@ -1,80 +1,102 @@
-\documentclass[varwidth=\maxdimen]{standalone}\usepackage{booktabs}\begin{document}\begin{tabular}{lrr}
+\documentclass[varwidth=\maxdimen]{standalone}
+\usepackage{booktabs}
+\newcommand{\subrow}[1]{\hspace{1.25em}#1}
+\begin{document}
+\begin{tabular}[t]{lrr}
 \toprule
-Behavior problem &  Frequency &  Prevalence (\%) \\
+Behavior problem &  Count &  Prevalence (\%) \\
 \midrule
-Unfamiliar dogs on walks (on lead)  &      674.0 &              16 \\
-Another dog in the home             &      447.0 &              11 \\
-Stangers visiting the home          &      391.0 &              10 \\
-Unfamiliar dogs on walks (off lead) &      371.0 &               9 \\
-Unfamiliar dogs visiting the home   &      371.0 &               9 \\
-Stangers away from the home         &      325.0 &               8 \\
-Familiar people in the home         &      296.0 &               7 \\
-Animals other than dogs in the home &      172.0 &               4 \\
-Veterinarians                       &      159.0 &               4 \\
-Groomers                            &       55.0 &               1 \\
-Trainers                            &       34.0 &               1 \\
-Crowd phobia                        &      784.0 &              19 \\
-Situational anxiety                 &      741.0 &              18 \\
-Noise phobia                        &      716.0 &              17 \\
-Veterinarian phobia                 &      684.0 &              17 \\
-Thunderstorm phobia                 &      573.0 &              14 \\
-Separation anxiety                  &      550.0 &              13 \\
-Travel anxiety                      &      438.0 &              11 \\
-Phobia of other dogs                &      428.0 &              10 \\
-Generalized anxiety                 &      359.0 &               9 \\
-Other                               &      231.0 &               6 \\
-PTSD                                &      176.0 &               4 \\
-Licking of wrist/hock               &      335.0 &               8 \\
-Tail chasing                        &      126.0 &               3 \\
-Digging in yard                     &      106.0 &               3 \\
-Other                               &       97.0 &               2 \\
-Tennis ball fetish                  &       87.0 &               2 \\
-Spinning                            &       82.0 &               2 \\
-Nail biting                         &       73.0 &               2 \\
-Shadow/light chasing                &       65.0 &               2 \\
-Sucking flank region/blankets       &       58.0 &               1 \\
-Running in geometric patterns       &       43.0 &               1 \\
-Collecting/arranging objects        &       39.0 &               1 \\
-Stone/rock chewing                  &       32.0 &               1 \\
-Fly snapping                        &       25.0 &               1 \\
-Owner away                          &      451.0 &              11 \\
-Owner present                       &      420.0 &              10 \\
-Urine and feces                     &      398.0 &              10 \\
-Specific locations                  &      344.0 &               8 \\
-Anywhere                            &      292.0 &               7 \\
-Urine                               &      173.0 &               4 \\
-Excited/overwhelmed                 &      127.0 &               3 \\
-Feces                               &       36.0 &               1 \\
-At tiggers (inside)                 &      498.0 &              12 \\
-At triggers (outside)               &      497.0 &              12 \\
-Owner present                       &      402.0 &              10 \\
-To get attention                    &      304.0 &               7 \\
-Owner away                          &      214.0 &               5 \\
-During car rides                    &       98.0 &               2 \\
-Family members                      &      915.0 &              22 \\
-Owner                               &      763.0 &              19 \\
-Strangers                           &      694.0 &              17 \\
-Familiar dogs                       &      259.0 &               6 \\
-People                              &      151.0 &               4 \\
-Unfamiliar dogs                     &      110.0 &               3 \\
-Inanimate objects                   &      102.0 &               2 \\
-Other species'                      &      420.0 &              10 \\
-Other dogs'                         &      416.0 &              10 \\
-Their own                           &      344.0 &               8 \\
-Owner is away                       &      397.0 &              10 \\
-Owner is home                       &      222.0 &               5 \\
-Dead Stuff                          &      436.0 &              11 \\
-Feces                               &      321.0 &               8 \\
-Urine                               &       72.0 &               2 \\
-Garbage                             &       66.0 &               2 \\
-Escapes from home                   &      239.0 &               6 \\
-Escapes when out                    &      207.0 &               5 \\
-Escapes from confinement            &      192.0 &               5 \\
-Returns home after escape           &      147.0 &               4 \\
-Difficulty settling                 &      314.0 &               8 \\
-Constant moving/jumping             &      276.0 &               7 \\
-Impulsive                           &      270.0 &               7 \\
-Highly distractible                 &      224.0 &               5 \\
+Fear/Anxiety \\
+  \subrow{Crowd phobia}                        &      784 &              19 \\
+  \subrow{Situational anxiety}                 &      741 &              18 \\
+  \subrow{Noise phobia}                        &      716 &              17 \\
+  \subrow{Veterinarian phobia}                 &      684 &              17 \\
+  \subrow{Thunderstorm phobia}                 &      573 &              14 \\
+  \subrow{Separation anxiety}                  &      550 &              13 \\
+  \subrow{Travel anxiety}                      &      438 &              11 \\
+  \subrow{Phobia of other dogs}                &      428 &              10 \\
+  \subrow{Generalized anxiety}                 &      359 &               9 \\
+  \subrow{Other}                               &      231 &               6 \\
+  \subrow{PTSD}                                &      176 &               4 \\
+Aggression \\
+  \subrow{Unfamiliar dogs on walks (on lead)}  &      674 &              16 \\
+  \subrow{Another dog in the home}             &      447 &              11 \\
+  \subrow{Stangers visiting the home}          &      391 &              10 \\
+  \subrow{Unfamiliar dogs on walks (off lead)} &      371 &               9 \\
+  \subrow{Unfamiliar dogs visiting the home}   &      371 &               9 \\
+  \subrow{Stangers away from the home}         &      325 &               8 \\
+  \subrow{Familiar people in the home}         &      296 &               7 \\
+  \subrow{Animals other than dogs in the home} &      172 &               4 \\
+  \subrow{Veterinarians}                       &      159 &               4 \\
+  \subrow{Groomers}                            &       55 &               1 \\
+  \subrow{Trainers}                            &       34 &               1 \\
+Jumping \\
+  \subrow{Family members}                      &      915 &              22 \\
+  \subrow{Owner}                               &      763 &              19 \\
+  \subrow{Strangers}                           &      694 &              17 \\
+Excessive Barking \\
+  \subrow{At tiggers (inside)}                 &      498 &              12 \\
+  \subrow{At triggers (outside)}               &      497 &              12 \\
+  \subrow{Owner present}                       &      402 &              10 \\
+  \subrow{To get attention}                    &      304 &               7 \\
+  \subrow{Owner away}                          &      214 &               5 \\
+  \subrow{During car rides}                    &       98 &               2 \\
+Coprophagia \\
+  \subrow{Other species'}                      &      420 &              10 \\
+  \subrow{Other dogs'}                         &      416 &              10 \\
+  \subrow{Their own}                           &      344 &               8 \\
+Compulsion \\
+  \subrow{Licking of wrist/hock}               &      335 &               8 \\
+  \subrow{Tail chasing}                        &      126 &               3 \\
+  \subrow{Digging in yard}                     &      106 &               3 \\
+  \subrow{Other}                               &       97 &               2 \\
+  \subrow{Tennis ball fetish}                  &       87 &               2 \\
+  \subrow{Spinning}                            &       82 &               2 \\
+  \subrow{Nail biting}                         &       73 &               2 \\
+  \subrow{Shadow/light chasing}                &       65 &               2 \\
+  \subrow{Sucking flank region/blankets}       &       58 &               1 \\
+  \subrow{Running in geometric patterns}       &       43 &               1 \\
+  \subrow{Collecting/arranging objects}        &       39 &               1 \\
+  \subrow{Stone/rock chewing}                  &       32 &               1 \\
+  \subrow{Fly snapping}                        &       25 &               1 \\
+\bottomrule
+\end{tabular}
+\begin{tabular}[t]{lrr}
+\toprule
+Behavior problem &  Count &  Prevalence (\%) \\
+\midrule
+House Soiling \\
+  \subrow{Owner away}                          &      451 &              11 \\
+  \subrow{Owner present}                       &      420 &              10 \\
+  \subrow{Urine and feces}                     &      398 &              10 \\
+  \subrow{Specific locations}                 &      344 &               8 \\
+  \subrow{Anywhere}                            &      292 &               7 \\
+  \subrow{Urine}                               &      173 &               4 \\
+  \subrow{Excited/overwhelmed}                 &      127 &               3 \\
+  \subrow{Feces}                               &       36 &               1 \\
+Rolling in Repulsive Material \\
+  \subrow{Dead Stuff}                          &      436 &              11 \\
+  \subrow{Feces}                               &      321 &               8 \\
+  \subrow{Urine}                               &       72 &               2 \\
+  \subrow{Garbage}                             &       66 &               2 \\
+Overactivity/Hyperactivity \\
+  \subrow{Difficulty settling}                 &      314 &               8 \\
+  \subrow{Constant moving/jumping}             &      276 &               7 \\
+  \subrow{Impulsive}                           &      270 &               7 \\
+  \subrow{Highly distractible}                 &      224 &               5 \\
+Destructive Behavior \\
+  \subrow{Owner is away}                       &      397 &              10 \\
+  \subrow{Owner is home}                       &      222 &               5 \\
+Running Away/Escaping \\
+  \subrow{Escapes from home}                   &      239 &               6 \\
+  \subrow{Escapes when out}                    &      207 &               5 \\
+  \subrow{Escapes from confinement}            &      192 &               5 \\
+  \subrow{Returns home after escape}           &      147 &               4 \\
+Mounting/Humping \\
+  \subrow{Familiar dogs}                       &      259 &               6 \\
+  \subrow{People}                              &      151 &               4 \\
+  \subrow{Unfamiliar dogs}                     &      110 &               3 \\
+  \subrow{Inanimate objects}                   &      102 &               2 \\
 \bottomrule
 \end{tabular}
 \end{document}

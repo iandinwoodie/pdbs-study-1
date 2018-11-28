@@ -31,6 +31,8 @@ def main():
         writer = csv.writer(fout)
         reader = csv.reader(data)
         for row in reader:
+            if row[1] == 'event_2_arm_1':
+                continue
             for index, col in enumerate(row):
                 if col != '' and re.match(pattern, col):
                     if not col in hashes:

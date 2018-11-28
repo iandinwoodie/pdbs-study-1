@@ -180,10 +180,11 @@ def parse_impure(line, unit):
 
 
 def get_breed_dict():
+    combo_list = []
     with open(data_dictionary, newline='', encoding='latin1') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
-            if row[0] == 'purebred_breed_1a':
+            if row[0] == 'purebred_breed':
                 combo_list = list(row[5].split("|"))
                 break
     breeds = {}
@@ -547,8 +548,8 @@ if __name__ == '__main__':
     data_dir = os.path.join(project_dir, 'data')
     raw_filepath = os.path.join(data_dir, 'raw', 'raw.csv')
     processed_filepath = os.path.join(data_dir, 'processed', 'processed.db')
-    metrics_filepath = os.path.join(project_dir, 'reports', 'metrics.txt')
-    data_dictionary = os.path.join(project_dir, 'references', 'data_dictionary.csv')
+    metrics_filepath = os.path.join(data_dir, 'processed', 'metrics.log')
+    data_dictionary = os.path.join(project_dir, 'docs', 'data_dictionary.csv')
     BREED_REFERENCE=get_breed_dict()
 
     main()

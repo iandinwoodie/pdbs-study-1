@@ -6,109 +6,109 @@ question_reason_for_part,phase_1_welcome,<center>A Little Bit About You</center>
 <font size=1 color=""blue"">Check all that apply</font>","1, I love dogs | 2, To help shelter animals | 3, My dog may have a behavior problem | 4, I work with animals | 5, Other",,,,,,,,LV,,,,@READONLY
 email,phase_1_welcome,,text,Email Address:,,,email,,,y,,y,,,,,@READONLY
 zip_code,phase_1_welcome,,text,Zip/Postal Code:,,,,,,,,,,,,,@READONLY
-desc_multiple_dogs ,phase_1,<center>Who Is Your Canine Companion</center>,descriptive,"<center>If you have multiple dogs, please fill in separate surveys for each.
+desc_multiple_dogs,phase_1,<center>Who Is Your Canine Companion</center>,descriptive,"<center>If you have multiple dogs, please fill in separate surveys for each.
 
 You will be given an opportunity to do so after you submit this survey.</center>",,,,,,,,,,,,,
-dog_name ,phase_1,,text,Canine Companion Name:,,,,,,y,,y,,,,,
-purebred ,phase_1,<center>A Little Bit About [dog_name_1a]</center>,yesno,Is [dog_name_1a] a purebred?,,,,,,,,,RH,,,,
-akc ,phase_1,,yesno,Is the breed recognized by the AKC?,,,,,,,[purebred_1a] = '1',,RH,,,,
-purebred_breed ,phase_1,,dropdown,Please select breed:,"1, affenpinscher | 2, afghan hound | 3, airedale terrier | 4, akita | 5, alaskan malamute | 6, american english coonhound | 7, american eskimo dog | 8, american foxhound | 9, american hairless terrier | 10, american leopard hound | 11, american staffordshire terrier | 12, american water spaniel | 13, anatolian shepherd dog | 14, appenzeller sennenhunde | 15, australian cattle dog | 16, australian shepherd | 17, australian terrier | 18, azawakh | 19, barbet | 20, basenji | 21, basset fauve de bretagne | 22, basset hound | 23, bavarian mountain scent hound | 24, beagle | 25, bearded collie | 26, beauceron | 27, bedlington terrier | 28, belgian laekenois | 29, belgian malinois | 30, belgian sheepdog | 31, belgian tervuren | 32, bergamasco sheepdog | 33, berger picard | 34, bernese mountain dog | 35, bichon frise | 36, biewer terrier | 37, black and tan coonhound | 38, black russian terrier | 39, bloodhound | 40, bluetick coonhound | 41, boerboel | 42, bolognese | 43, border collie | 44, border terrier | 45, borzoi | 46, boston terrier | 47, bouvier des flandres | 48, boxer | 49, boykin spaniel | 50, briard | 51, brittany | 52, brussels griffon | 53, bull terrrier | 54, bull terrier (miniature) | 55, bulldog | 56, bullmastiff | 57, cairn terrier | 58, canaan dog | 59, cane corso | 60, cardigan welsh corgi | 61, cavalier king charles spaniel | 62, cesky terrier | 63, chesapeake bay retriever | 64, chihuahua | 65, chinese crested dog | 66, chinese shar pei | 67, chinook | 68, chow chow | 69, cirneco dell'etna | 70, clumber spaniel | 71, cocker spaniel | 72, collie | 73, coton de tulear | 74, curly-coated retriever | 75, dachshund | 76, dalmatian | 77, dandie dinmont terrier | 78, doberman pinscher | 79, doque de bordeaux | 80, english cocker spaniel | 81, english foxhound | 82, english setter | 83, english springer spaniel | 84, english toy spaniel | 85, entlebucher mountain dog | 86, field spaniel | 87, finnish lapphund | 88, finnish spitz | 89, flat-coated retriever | 90, french bulldog | 91, german pinscher | 92, german shepherd dog | 93, german shorthaired pointer | 94, german wirehaired pointer | 95, giant schnauzer | 96, glen of imaal terrier | 97, golden retriever | 98, gordon setter | 99, great dane | 100, great pyrenees | 101, greater swiss mountain dog | 102, greyhound | 103, harrier | 104, havanese | 105, ibizan hound | 106, icelandic sheepdog | 107, irish red and white setter | 108, irish setter | 109, irish terrier | 110, irish water spaniel | 111, irish wolfhound | 112, itialian greyhound | 113, japanese chin | 114, keeshond | 115, kerry blue terrier | 116, komondor | 117, kuvasz | 118, labrador retriever | 119, lagotto romagnolo | 120, lakeland terrier | 121, leonberger | 122, lhasa apso | 123, lowchen | 124, maltese | 125, manchester terrier | 126, mastiff | 127, miniature american shepherd | 128, miniature bull terrier | 129, miniature pinscher | 130, miniature schnauzer | 131, neapolitan mastiff | 132, newfoundland | 133, norfolk terrier | 134, norwegian buhund | 135, norwegian elkhound | 136, norwegian lundehund | 137, norwich terrier | 138, nova scotia duck-tolling retriever | 139, old english sheepdog | 140, otterhound | 141, papillon | 142, parson russell terrier | 143, pekingese | 144, pembroke welsh corgi | 145, petit basset griffon vendeen | 146, pharaoh hound | 147, plott | 148, pointer | 149, polish lowland sheepdog | 150, pomeranian | 151, poodle | 152, portuguese podengo | 153, portuguese water dog | 154, pug | 155, puli | 156, pumi | 157, pyrenean shepherd | 158, rat terrier | 159, redbone coonhound | 160, rhodesian ridgeback | 161, rottweiler | 162, russel terrier | 163, st. benard | 164, saluki | 165, samoyed | 201, schapendoes | 166, schipperke | 167, scottish deerhound | 168, scottish terrier | 169, sealyham terrier | 170, shetland sheepdog | 171, shiba inu | 172, shih tzu | 173, siberian husky | 174, silky terrier | 175, skye terrier | 176, sloughi | 177, smooth fox terrier | 178, soft-coated wheaten terrier | 179, spanish water dog | 180, spinone italiano | 181, staffordshire bull terrier | 182, standard schnauzer | 183, sussex spaniel | 184, swedish valhund | 185, tibetan mastiff | 186, tibetan spaniel | 187, tibetan terrier | 188, toy fox terrier | 189, treeing water coonhound | 190, vizsla | 191, weimaraner | 192, welsh springer spaniel | 193, welsh terrier | 194, west highland white terrier | 195, whippet | 196, wire fox terrier | 197, wirehaired pointing griffon | 198, wirehaired vizsla | 199, xoloitzcuintli | 200, yorkshire terrier",,autocomplete,,,,[akc_1a] = '1',,,,,,
-okc ,phase_1,,text,Please enter the breed:,,,,,,,[akc_1a] = '0',,RH,,,,
-mixbred ,phase_1,,yesno,Do you know the breed composition for [dog_name_1a]?,,,,,,,[purebred_1a] = '0',,RH,,,,
-mixbred_breed ,phase_1,,text,Please list the breed composition:,,,,,,,[mixbred_1a] = '1',,RH,,,,"@PLACEHOLDER=""e.g., Labrador Retriever, Poodle"""
-acquisition_source ,phase_1,,dropdown,Where did you acquire [dog_name_1a]?,"1, Online - Rescue | 2, Online - Purchase | 3, Pet Store | 4, Shelter/Rescue | 5, Breeder | 6, Self Bred | 7, Friend/Family Member | 8, Found | 9, Other",,,,,,,,RH,,,,
-dog_age_acq_unit_logic ,phase_1,,radio,Was [dog_name_1a] older than 12 months when acquired?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
-dog_age_acq_months ,phase_1,,text,Please enter the age of [dog_name_1a] when acquired:,,"<font size=2 color=""blue"">in months</font>",,,,,[dog_age_acq_unit_logic_1a] = '0',,RH,,,,
-dog_age_acq_years ,phase_1,,text,Please enter the age of [dog_name_1a] when acquired:,,"<font size=2 color=""blue"">in years</font>",,,,,[dog_age_acq_unit_logic_1a] = '1',,RH,,,,
-dog_age_unit_logic ,phase_1,,radio,Is [dog_name_1a] older than 12 months today?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
-dog_age_today_months ,phase_1,,text,Please enter the current age of [dog_name_1a]:,,"<font size=2 color=""blue"">in months</font>",,,,,[dog_age_unit_logic_1a] = '0',,RH,,,,
-dog_age_today_years ,phase_1,,text,Please enter the current age of [dog_name_1a]:,,"<font size=2 color=""blue"">in years</font>",,,,,[dog_age_unit_logic_1a] = '1',,RH,,,,
-dog_sex ,phase_1,,radio,What gender is [dog_name_1a]?,"1, Male | 2, Female",,,,,,,,RH,,,,
-dog_spayed ,phase_1,,radio,Is [dog_name_1a] spayed/neutered?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
-dog_sex_age ,phase_1,,radio,Was [dog_name_1a] spayed/neutered before 12 months of age?,"1, Yes | 0, No | 2, I don't know",,,,,,[dog_spayed_1a] = '1',,RH,,,,
-dog_sex_month ,phase_1,,text,How old was [dog_name_1a] when spayed/neutered?,,"<font size=2 color=""blue"">in months</font>",,,,,[dog_sex_age_1a] = '1',,RH,,,,
-dog_sex_year ,phase_1,,text,How old was [dog_name_1a] when spayed/neutered?,,"<font size=2 color=""blue"">in years</font>",,,,,[dog_sex_age_1a] = '0',,RH,,,,
-dog_weight_logic ,phase_1,,yesno,Do you know how much [dog_name_1a] weighs?,,,,,,,,,RH,,,,
-dog_weight ,phase_1,,text,Please enter the current weight of [dog_name_1a]:,,"<font size=2 color=""blue"">in pounds</font>",,,,,[dog_weight_logic_1a] = '1',,RH,,,,
-q01_main ,phase_1,<center>How Does [dog_name_1a] Behave</center>,radio,Do you believe [dog_name_1a] has ever had a behavior problem?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
-q01_acq ,phase_1,,radio,Was the behavior problem evident at the time of acquisition?,"1, Yes | 0, No | 2, I don't know",,,,,,[q01_main_1a] = '1',,RH,,,,
-q01_age_logic ,phase_1,,yesno,Do you remember the age of [dog_name_1a] when you first noticed the behavior problem?,,,,,,,[q01_acq_1a] = '0',,RH,,,,
-q01_age_unit_logic ,phase_1,,yesno,Did you notice the behavior problem within the first 12 months of age?,,,,,,,[q01_age_logic_1a] = '1',,RH,,,,
-q01_age_months ,phase_1,,text,Please enter the age you first noticed the behavior problem:,,<font size=2>in months</font>,,,,,[q01_age_unit_logic_1a] = '1',,RH,,,,
-q01_age_years ,phase_1,,text,Please enter the age you first noticed the behavior problem:,,<font size=2>in years</font>,,,,,[q01_age_unit_logic_1a] = '0',,RH,,,,
-q01_reminder ,phase_1,,descriptive,The information you provide about [dog_name_1a] is essential to this scientific study and important to the canine community.,,,,,,,[q01_main_1a] = '0' or [q01_main_1a] = '2',,,,,,
-q02_main ,phase_1,,checkbox,"Has [dog_name_1a] ever exhibited any of the following?
+dog_name,phase_1,,text,Canine Companion Name:,,,,,,y,,y,,,,,
+purebred,phase_1,<center>A Little Bit About [dog_name_1a]</center>,yesno,Is [dog_name_1a] a purebred?,,,,,,,,,RH,,,,
+akc,phase_1,,yesno,Is the breed recognized by the AKC?,,,,,,,[purebred_1a] = '1',,RH,,,,
+purebred_breed,phase_1,,dropdown,Please select breed:,"1, affenpinscher | 2, afghan hound | 3, airedale terrier | 4, akita | 5, alaskan malamute | 6, american english coonhound | 7, american eskimo dog | 8, american foxhound | 9, american hairless terrier | 10, american leopard hound | 11, american staffordshire terrier | 12, american water spaniel | 13, anatolian shepherd dog | 14, appenzeller sennenhunde | 15, australian cattle dog | 16, australian shepherd | 17, australian terrier | 18, azawakh | 19, barbet | 20, basenji | 21, basset fauve de bretagne | 22, basset hound | 23, bavarian mountain scent hound | 24, beagle | 25, bearded collie | 26, beauceron | 27, bedlington terrier | 28, belgian laekenois | 29, belgian malinois | 30, belgian sheepdog | 31, belgian tervuren | 32, bergamasco sheepdog | 33, berger picard | 34, bernese mountain dog | 35, bichon frise | 36, biewer terrier | 37, black and tan coonhound | 38, black russian terrier | 39, bloodhound | 40, bluetick coonhound | 41, boerboel | 42, bolognese | 43, border collie | 44, border terrier | 45, borzoi | 46, boston terrier | 47, bouvier des flandres | 48, boxer | 49, boykin spaniel | 50, briard | 51, brittany | 52, brussels griffon | 53, bull terrrier | 54, bull terrier (miniature) | 55, bulldog | 56, bullmastiff | 57, cairn terrier | 58, canaan dog | 59, cane corso | 60, cardigan welsh corgi | 61, cavalier king charles spaniel | 62, cesky terrier | 63, chesapeake bay retriever | 64, chihuahua | 65, chinese crested dog | 66, chinese shar pei | 67, chinook | 68, chow chow | 69, cirneco dell'etna | 70, clumber spaniel | 71, cocker spaniel | 72, collie | 73, coton de tulear | 74, curly-coated retriever | 75, dachshund | 76, dalmatian | 77, dandie dinmont terrier | 78, doberman pinscher | 79, doque de bordeaux | 80, english cocker spaniel | 81, english foxhound | 82, english setter | 83, english springer spaniel | 84, english toy spaniel | 85, entlebucher mountain dog | 86, field spaniel | 87, finnish lapphund | 88, finnish spitz | 89, flat-coated retriever | 90, french bulldog | 91, german pinscher | 92, german shepherd dog | 93, german shorthaired pointer | 94, german wirehaired pointer | 95, giant schnauzer | 96, glen of imaal terrier | 97, golden retriever | 98, gordon setter | 99, great dane | 100, great pyrenees | 101, greater swiss mountain dog | 102, greyhound | 103, harrier | 104, havanese | 105, ibizan hound | 106, icelandic sheepdog | 107, irish red and white setter | 108, irish setter | 109, irish terrier | 110, irish water spaniel | 111, irish wolfhound | 112, itialian greyhound | 113, japanese chin | 114, keeshond | 115, kerry blue terrier | 116, komondor | 117, kuvasz | 118, labrador retriever | 119, lagotto romagnolo | 120, lakeland terrier | 121, leonberger | 122, lhasa apso | 123, lowchen | 124, maltese | 125, manchester terrier | 126, mastiff | 127, miniature american shepherd | 128, miniature bull terrier | 129, miniature pinscher | 130, miniature schnauzer | 131, neapolitan mastiff | 132, newfoundland | 133, norfolk terrier | 134, norwegian buhund | 135, norwegian elkhound | 136, norwegian lundehund | 137, norwich terrier | 138, nova scotia duck-tolling retriever | 139, old english sheepdog | 140, otterhound | 141, papillon | 142, parson russell terrier | 143, pekingese | 144, pembroke welsh corgi | 145, petit basset griffon vendeen | 146, pharaoh hound | 147, plott | 148, pointer | 149, polish lowland sheepdog | 150, pomeranian | 151, poodle | 152, portuguese podengo | 153, portuguese water dog | 154, pug | 155, puli | 156, pumi | 157, pyrenean shepherd | 158, rat terrier | 159, redbone coonhound | 160, rhodesian ridgeback | 161, rottweiler | 162, russel terrier | 163, st. benard | 164, saluki | 165, samoyed | 201, schapendoes | 166, schipperke | 167, scottish deerhound | 168, scottish terrier | 169, sealyham terrier | 170, shetland sheepdog | 171, shiba inu | 172, shih tzu | 173, siberian husky | 174, silky terrier | 175, skye terrier | 176, sloughi | 177, smooth fox terrier | 178, soft-coated wheaten terrier | 179, spanish water dog | 180, spinone italiano | 181, staffordshire bull terrier | 182, standard schnauzer | 183, sussex spaniel | 184, swedish valhund | 185, tibetan mastiff | 186, tibetan spaniel | 187, tibetan terrier | 188, toy fox terrier | 189, treeing water coonhound | 190, vizsla | 191, weimaraner | 192, welsh springer spaniel | 193, welsh terrier | 194, west highland white terrier | 195, whippet | 196, wire fox terrier | 197, wirehaired pointing griffon | 198, wirehaired vizsla | 199, xoloitzcuintli | 200, yorkshire terrier",,autocomplete,,,,[akc_1a] = '1',,,,,,
+okc,phase_1,,text,Please enter the breed:,,,,,,,[akc_1a] = '0',,RH,,,,
+mixbred,phase_1,,yesno,Do you know the breed composition for [dog_name_1a]?,,,,,,,[purebred_1a] = '0',,RH,,,,
+mixbred_breed,phase_1,,text,Please list the breed composition:,,,,,,,[mixbred_1a] = '1',,RH,,,,"@PLACEHOLDER=""e.g., Labrador Retriever, Poodle"""
+acquisition_source,phase_1,,dropdown,Where did you acquire [dog_name_1a]?,"1, Online - Rescue | 2, Online - Purchase | 3, Pet Store | 4, Shelter/Rescue | 5, Breeder | 6, Self Bred | 7, Friend/Family Member | 8, Found | 9, Other",,,,,,,,RH,,,,
+dog_age_acq_unit_logic,phase_1,,radio,Was [dog_name_1a] older than 12 months when acquired?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
+dog_age_acq_months,phase_1,,text,Please enter the age of [dog_name_1a] when acquired:,,"<font size=2 color=""blue"">in months</font>",,,,,[dog_age_acq_unit_logic_1a] = '0',,RH,,,,
+dog_age_acq_years,phase_1,,text,Please enter the age of [dog_name_1a] when acquired:,,"<font size=2 color=""blue"">in years</font>",,,,,[dog_age_acq_unit_logic_1a] = '1',,RH,,,,
+dog_age_unit_logic,phase_1,,radio,Is [dog_name_1a] older than 12 months today?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
+dog_age_today_months,phase_1,,text,Please enter the current age of [dog_name_1a]:,,"<font size=2 color=""blue"">in months</font>",,,,,[dog_age_unit_logic_1a] = '0',,RH,,,,
+dog_age_today_years,phase_1,,text,Please enter the current age of [dog_name_1a]:,,"<font size=2 color=""blue"">in years</font>",,,,,[dog_age_unit_logic_1a] = '1',,RH,,,,
+dog_sex,phase_1,,radio,What gender is [dog_name_1a]?,"1, Male | 2, Female",,,,,,,,RH,,,,
+dog_spayed,phase_1,,radio,Is [dog_name_1a] spayed/neutered?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
+dog_sex_age,phase_1,,radio,Was [dog_name_1a] spayed/neutered before 12 months of age?,"1, Yes | 0, No | 2, I don't know",,,,,,[dog_spayed_1a] = '1',,RH,,,,
+dog_sex_month,phase_1,,text,How old was [dog_name_1a] when spayed/neutered?,,"<font size=2 color=""blue"">in months</font>",,,,,[dog_sex_age_1a] = '1',,RH,,,,
+dog_sex_year,phase_1,,text,How old was [dog_name_1a] when spayed/neutered?,,"<font size=2 color=""blue"">in years</font>",,,,,[dog_sex_age_1a] = '0',,RH,,,,
+dog_weight_logic,phase_1,,yesno,Do you know how much [dog_name_1a] weighs?,,,,,,,,,RH,,,,
+dog_weight,phase_1,,text,Please enter the current weight of [dog_name_1a]:,,"<font size=2 color=""blue"">in pounds</font>",,,,,[dog_weight_logic_1a] = '1',,RH,,,,
+q01_main,phase_1,<center>How Does [dog_name_1a] Behave</center>,radio,Do you believe [dog_name_1a] has ever had a behavior problem?,"1, Yes | 0, No | 2, I don't know",,,,,,,,RH,,,,
+q01_acq,phase_1,,radio,Was the behavior problem evident at the time of acquisition?,"1, Yes | 0, No | 2, I don't know",,,,,,[q01_main_1a] = '1',,RH,,,,
+q01_age_logic,phase_1,,yesno,Do you remember the age of [dog_name_1a] when you first noticed the behavior problem?,,,,,,,[q01_acq_1a] = '0',,RH,,,,
+q01_age_unit_logic,phase_1,,yesno,Did you notice the behavior problem within the first 12 months of age?,,,,,,,[q01_age_logic_1a] = '1',,RH,,,,
+q01_age_months,phase_1,,text,Please enter the age you first noticed the behavior problem:,,<font size=2>in months</font>,,,,,[q01_age_unit_logic_1a] = '1',,RH,,,,
+q01_age_years,phase_1,,text,Please enter the age you first noticed the behavior problem:,,<font size=2>in years</font>,,,,,[q01_age_unit_logic_1a] = '0',,RH,,,,
+q01_reminder,phase_1,,descriptive,The information you provide about [dog_name_1a] is essential to this scientific study and important to the canine community.,,,,,,,[q01_main_1a] = '0' or [q01_main_1a] = '2',,,,,,
+q02_main,phase_1,,checkbox,"Has [dog_name_1a] ever exhibited any of the following?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Aggression (e.g., growling, snarling, snapping, lunging, biting) | 2, Fearful and/or anxious behavior (e.g., hiding, cowering, shaking, low tail or body, panting, pacing, vocalization) | 3, Repetitive behavior (e.g., light or tail chasing, licking) | 4, House soiling | 5, Excessive barking | 6, Jumping on people | 7, Mounting/humping | 8, Eating feces (i.e., poop) | 9, Destructive behavior | 10, Rolling in repulsive objects (e.g., feces, garbage) | 12, Running away | 13, Overactive/hyperactive",,,,,,,,LV,,,,
-q02_score ,phase_1,,calc,Behavior score:,[q02_main_1a(1)] + [q02_main_1a(2)] + [q02_main_1a(3)] + [q02_main_1a(4)] + [q02_main_1a(5)] + [q02_main_1a(6)] + [q02_main_1a(7)] + [q02_main_1a(8)] + [q02_main_1a(9)] + [q02_main_1a(10)] + [q02_main_1a(12)] + [q02_main_1a(13)],,,,,,,,,,,,@HIDDEN
-q03_main ,phase_1,<center>Fill Us In On The Details</center>,checkbox,"To which of the following has [dog_name_1a] ever shown aggression?
+q02_score,phase_1,,calc,Behavior score:,[q02_main_1a(1)] + [q02_main_1a(2)] + [q02_main_1a(3)] + [q02_main_1a(4)] + [q02_main_1a(5)] + [q02_main_1a(6)] + [q02_main_1a(7)] + [q02_main_1a(8)] + [q02_main_1a(9)] + [q02_main_1a(10)] + [q02_main_1a(12)] + [q02_main_1a(13)],,,,,,,,,,,,@HIDDEN
+q03_main,phase_1,<center>Fill Us In On The Details</center>,checkbox,"To which of the following has [dog_name_1a] ever shown aggression?
 
 (e.g., growling, snarling, snapping, lunging, biting)
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Familiar people in the home | 2, Strangers visiting the home | 3, Strangers away from the home | 4, Another dog in the home | 5, Unfamiliar dogs visiting the home | 6, Unfamiliar dogs outside on walks (off lead) | 7, Unfamiliar dogs outside on walks (on lead) | 8, Veterinarians | 9, Trainers | 10, Groomers | 11, Animals other than dogs in the home",,,,,,[q02_main_1a(1)] = '1',,LV,,,,
-q03_animal ,phase_1,,text,Which animal(s) has [dog_name_1a] show aggression to?,,,,,,,[q03_main_1a(11)] = '1',,RH,,,,"@PLACEHOLDER=""e.g., Cats, Squirrels"""
-q03_count ,phase_1,,calc,Aggression count:,[q03_main_1a(1)] + [q03_main_1a(2)] + [q03_main_1a(3)] + [q03_main_1a(4)] + [q03_main_1a(5)] + [q03_main_1a(6)] + [q03_main_1a(7)] + [q03_main_1a(8)] + [q03_main_1a(9)] + [q03_main_1a(10)] + [q03_main_1a(11)],,,,,,,,,,,,@HIDDEN
-q03_form ,phase_1,,checkbox,"In which of the following forms has [dog_name_1a] exhibited aggression?
+q03_animal,phase_1,,text,Which animal(s) has [dog_name_1a] show aggression to?,,,,,,,[q03_main_1a(11)] = '1',,RH,,,,"@PLACEHOLDER=""e.g., Cats, Squirrels"""
+q03_count,phase_1,,calc,Aggression count:,[q03_main_1a(1)] + [q03_main_1a(2)] + [q03_main_1a(3)] + [q03_main_1a(4)] + [q03_main_1a(5)] + [q03_main_1a(6)] + [q03_main_1a(7)] + [q03_main_1a(8)] + [q03_main_1a(9)] + [q03_main_1a(10)] + [q03_main_1a(11)],,,,,,,,,,,,@HIDDEN
+q03_form,phase_1,,checkbox,"In which of the following forms has [dog_name_1a] exhibited aggression?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Growling | 2, Snarling | 3, Snapping | 4, Lunging | 5, Biting",,,,,,[q02_main_1a(1)] = '1',,LV,,,,
-q03_person ,phase_1,,yesno,Has [dog_name_1a] ever bitten a person?,,,,,,,[q03_form_1a(5)] = '1',,RH,,,,
-q03_person_freq ,phase_1,,text,"How many times has [dog_name_1a] bitten another person?
+q03_person,phase_1,,yesno,Has [dog_name_1a] ever bitten a person?,,,,,,,[q03_form_1a(5)] = '1',,RH,,,,
+q03_person_freq,phase_1,,text,"How many times has [dog_name_1a] bitten another person?
 
 <font size=1 color=""blue"">Please enter a number, it is okay to estimate</font>",,,number,,,,[q03_person_1a] = '1',,RH,,,,
-q03_dog ,phase_1,,yesno,Has [dog_name_1a] ever bitten another dog?,,,,,,,[q03_form_1a(5)] = '1',,RH,,,,
-q03_dog_freq ,phase_1,,text,"How many times has [dog_name_1a] bitten another dog?
+q03_dog,phase_1,,yesno,Has [dog_name_1a] ever bitten another dog?,,,,,,,[q03_form_1a(5)] = '1',,RH,,,,
+q03_dog_freq,phase_1,,text,"How many times has [dog_name_1a] bitten another dog?
 
 <font size=1 color=""blue"">Please enter a number, it is okay to estimate</font>",,,number,,,,[q03_dog_1a] = '1',,RH,,,,
-q03_bite_quantity ,phase_1,,yesno,Has [dog_name_1a] ever delivered more than a single bite per incident?,,,,,,,[q03_form_1a(5)] = '1',,RH,,,,
-q03_severity ,phase_1,,dropdown,How severe was the worst bite?,"1, Level 1 - Obnoxious or aggressive behavior but no skin-contact by teeth | 2, Level 2 - Skin-contact by teeth but no skin-puncture | 3, Level 3 - One to four punctures from a single bite with no puncture deeper than half the length of the dog's canine teeth | 4, Level 4 - One to four punctures from a single bite with at least one puncture deeper than half the length of the dog's canine teeth | 5, Level 5 - Multiple-bite incident with at least two Level 4 bites or multiple-attack incident with at least one Level 4 bite in each",,,,,,[q03_form_1a(5)] = '1',,RH,,,,
-q04 ,phase_1,,checkbox,"Has [dog_name_1a] ever exhibited any of the following fearful or anxious behaviors?
+q03_bite_quantity,phase_1,,yesno,Has [dog_name_1a] ever delivered more than a single bite per incident?,,,,,,,[q03_form_1a(5)] = '1',,RH,,,,
+q03_severity,phase_1,,dropdown,How severe was the worst bite?,"1, Level 1 - Obnoxious or aggressive behavior but no skin-contact by teeth | 2, Level 2 - Skin-contact by teeth but no skin-puncture | 3, Level 3 - One to four punctures from a single bite with no puncture deeper than half the length of the dog's canine teeth | 4, Level 4 - One to four punctures from a single bite with at least one puncture deeper than half the length of the dog's canine teeth | 5, Level 5 - Multiple-bite incident with at least two Level 4 bites or multiple-attack incident with at least one Level 4 bite in each",,,,,,[q03_form_1a(5)] = '1',,RH,,,,
+q04,phase_1,,checkbox,"Has [dog_name_1a] ever exhibited any of the following fearful or anxious behaviors?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Thunderstorm phobia | 2, Other noise phobia | 3, Fearful or anxious when confronted by certain people or in crowds (without showing aggression toward the people) | 4, Fearful of other dogs (without showing aggression toward the dogs) | 5, Post-traumatic stress disorder (PTSD) (hypervigilance and avoidance following a life-threatening event) | 6, General anxiety (e.g., pacing, panting, easily startled in most circumstances) | 7, Situational anxiety (e.g., pacing, panting, easily startled in certain circumstances) | 8, Fearful/anxious in the veterinary office | 9, Separation anxiety (i.e., showing signs such as pre-departure anxiety, vocalization, destructive behavior when alone and exuberant greeting on owner's return) | 10, Anxiety in the car (e.g. panting, restless, vocalizing) | 11, Other fear or anxious behavior",,,,,,[q02_main_1a(2)] = '1',,LV,,,,
-q04_other_fear ,phase_1,,notes,Please describe the other fearful/anxious behavior:,,,,,,,[q04_1a(11)] = '1',,LH,,,,
-q04_count ,phase_1,,calc,Fearful count:,[q03_main_1a(1)] + [q03_main_1a(2)] + [q03_main_1a(3)] + [q03_main_1a(4)] + [q03_main_1a(5)] + [q03_main_1a(6)] + [q03_main_1a(7)] + [q03_main_1a(8)] + [q03_main_1a(9)] + [q03_main_1a(10)] + [q03_main_1a(11)],,,,,,,,,,,,@HIDDEN
-q05_main ,phase_1,,checkbox,"Has [dog_name_1a] ever exhibited any of the following repetitive behaviors?
+q04_other_fear,phase_1,,notes,Please describe the other fearful/anxious behavior:,,,,,,,[q04_1a(11)] = '1',,LH,,,,
+q04_count,phase_1,,calc,Fearful count:,[q03_main_1a(1)] + [q03_main_1a(2)] + [q03_main_1a(3)] + [q03_main_1a(4)] + [q03_main_1a(5)] + [q03_main_1a(6)] + [q03_main_1a(7)] + [q03_main_1a(8)] + [q03_main_1a(9)] + [q03_main_1a(10)] + [q03_main_1a(11)],,,,,,,,,,,,@HIDDEN
+q05_main,phase_1,,checkbox,"Has [dog_name_1a] ever exhibited any of the following repetitive behaviors?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Spinning | 2, Tail chasing | 3, Shadow or light chasing | 4, Running in a geometric pattern | 5, Compulsive licking of the wrist or hock | 6, Fly snapping (no flies actually present) | 7, Sucking the flank region or blankets | 8, Tennis ball fetish | 9, Collecting objects, and arranging them in piles or patterns | 10, Nail biting | 11, Digging in the yard | 12, Stone/rock chewing | 13, Other",,,,,,[q02_main_1a(3)] = '1',,LV,,,,
-q05_other_rep ,phase_1,,notes,Please describe the other repetitive behavior:,,,,,,,[q05_main_1a(13)] = '1',,LH,,,,
-q06_main ,phase_1,,radio,Do you think that [dog_name_1a] has ever had a house soiling problem?,"1, Yes | 0, No",,,,,,[q02_main_1a(4)] = '1',,RH,,,,
-q06_soil_type ,phase_1,,radio,In which way has [dog_name_1a] soiled in the house?,"1, Urine | 2, Feces | 3, Both",,,,,,[q02_main_1a(4)] = '1',,RH,,,,
-q06_situation ,phase_1,,checkbox,"In which of the following situations has [dog_name_1a] soiled in the house?
+q05_other_rep,phase_1,,notes,Please describe the other repetitive behavior:,,,,,,,[q05_main_1a(13)] = '1',,LH,,,,
+q06_main,phase_1,,radio,Do you think that [dog_name_1a] has ever had a house soiling problem?,"1, Yes | 0, No",,,,,,[q02_main_1a(4)] = '1',,RH,,,,
+q06_soil_type,phase_1,,radio,In which way has [dog_name_1a] soiled in the house?,"1, Urine | 2, Feces | 3, Both",,,,,,[q02_main_1a(4)] = '1',,RH,,,,
+q06_situation,phase_1,,checkbox,"In which of the following situations has [dog_name_1a] soiled in the house?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, When I am home | 2, When I am out | 3, When excited or overwhelmed (e.g., greetings, approach)",,,,,,[q02_main_1a(4)] = '1',,LV,,,,
-q06_soil_location ,phase_1,,checkbox,"Where has [dog_name_1a] soiled in the house?
+q06_soil_location,phase_1,,checkbox,"Where has [dog_name_1a] soiled in the house?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Specific locations | 2, Anywhere on the floor",,,,,,[q02_main_1a(4)] = '1',,LV,,,,
-q07_main ,phase_1,,radio,Do you think that [dog_name_1a] has ever barked excessively?,"1, Yes | 0, No",,,,,,[q02_main_1a(5)] = '1',,RH,,,,
-q07_sitatuon ,phase_1,,checkbox,"In which of the following situations has [dog_name_1a] barked excessively?
+q07_main,phase_1,,radio,Do you think that [dog_name_1a] has ever barked excessively?,"1, Yes | 0, No",,,,,,[q02_main_1a(5)] = '1',,RH,,,,
+q07_sitatuon,phase_1,,checkbox,"In which of the following situations has [dog_name_1a] barked excessively?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, When you are home | 2, When you are away | 3, To get your attention | 4, Inside - At triggers (e.g., noise, passerby) | 5, Outside - At triggers (e.g., dogs, people, noises) | 6, During car rides",,,,,,[q02_main_1a(5)] = '1',,LV,,,,
-q08_main ,phase_1,,radio,Do you think [dog_name_1a] has ever jumped on people to an extent that you considered it to be a behavioral problem?,"1, Yes | 0, No",,,,,,[q02_main_1a(6)] = '1',,RH,,,,
-q08_who ,phase_1,,checkbox,"On whom does [dog_name_1a] usually jump?
+q08_main,phase_1,,radio,Do you think [dog_name_1a] has ever jumped on people to an extent that you considered it to be a behavioral problem?,"1, Yes | 0, No",,,,,,[q02_main_1a(6)] = '1',,RH,,,,
+q08_who,phase_1,,checkbox,"On whom does [dog_name_1a] usually jump?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, You | 2, Family members | 3, Strangers",,,,,,[q02_main_1a(6)] = '1',,LV,,,,
-q09_main ,phase_1,,checkbox,"Which of the following has [dog_name_1a] attempted to mount/hump?
+q09_main,phase_1,,checkbox,"Which of the following has [dog_name_1a] attempted to mount/hump?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, People | 2, Familiar dogs | 3, Unfamiliar dogs | 4, Inanimate objects (e.g., stuffed toys, pillows)",,,,,,[q02_main_1a(7)] = '1',,LV,,,,
-q09_freq ,phase_1,,dropdown,How often does [dog_name_1a] mount/hump?,"1, Daily | 2, Weekly | 3, Monthly | 4, Yearly",,,,,,[q02_main_1a(7)] = '1',,RH,,,,
-q10_main ,phase_1,,checkbox,"What type of feces has [dog_name_1a] consumed?
+q09_freq,phase_1,,dropdown,How often does [dog_name_1a] mount/hump?,"1, Daily | 2, Weekly | 3, Monthly | 4, Yearly",,,,,,[q02_main_1a(7)] = '1',,RH,,,,
+q10_main,phase_1,,checkbox,"What type of feces has [dog_name_1a] consumed?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Their own feces | 2, Other dogs' feces | 3, Other species' feces (e.g., deer, goose)",,,,,,[q02_main_1a(8)] = '1',,LV,,,,
-q11_main ,phase_1,,yesno,Would you consider the destructive behavior exhibited by [dog_name_1a] to be problematic?,,,,,,,[q02_main_1a(9)] = '1',,RH,,,,
-q11_situation ,phase_1,,checkbox,"In which of the following situations has [dog_name_1a] exhibited destructive behavior?
+q11_main,phase_1,,yesno,Would you consider the destructive behavior exhibited by [dog_name_1a] to be problematic?,,,,,,,[q02_main_1a(9)] = '1',,RH,,,,
+q11_situation,phase_1,,checkbox,"In which of the following situations has [dog_name_1a] exhibited destructive behavior?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, When you are home | 2, When you are away",,,,,,[q02_main_1a(9)] = '1',,LV,,,,
-q11_freq ,phase_1,,dropdown,How often does [dog_name_1a] exhibit destructive behavior?,"1, Daily | 2, Weekly | 3, Monthly | 4, Yearly",,,,,,[q11_main_1a] = '1',,RH,,,,
-q12_main ,phase_1,,checkbox,"Has [dog_name_1a] ever rolled in any of the following repulsive objects?
+q11_freq,phase_1,,dropdown,How often does [dog_name_1a] exhibit destructive behavior?,"1, Daily | 2, Weekly | 3, Monthly | 4, Yearly",,,,,,[q11_main_1a] = '1',,RH,,,,
+q12_main,phase_1,,checkbox,"Has [dog_name_1a] ever rolled in any of the following repulsive objects?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Urine | 2, Feces | 3, Dead stuff (e.g., blackish, greasy, rancid) | 4, Garbage",,,,,,[q02_main_1a(10)] = '1',,LV,,,,
-q14_out ,phase_1,,yesno,"When out with [dog_name_1a], has [dog_name_1a] ever run away and not come back on his/her own?",,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
-q14_house ,phase_1,,yesno,Has [dog_name_1a] ever bolted/escaped from the house and left?,,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
-q14_conf ,phase_1,,yesno,"Has [dog_name_1a] ever escaped confinement (e.g., fenced backyard) and run away?",,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
-q14_return ,phase_1,,yesno,Will [dog_name_1a] always return if you call for him/her?,,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
-q15_main ,phase_1,,checkbox,"Which of the following overactive/hyperactive behaviors has [dog_name_1a] exhibited?
+q14_out,phase_1,,yesno,"When out with [dog_name_1a], has [dog_name_1a] ever run away and not come back on his/her own?",,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
+q14_house,phase_1,,yesno,Has [dog_name_1a] ever bolted/escaped from the house and left?,,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
+q14_conf,phase_1,,yesno,"Has [dog_name_1a] ever escaped confinement (e.g., fenced backyard) and run away?",,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
+q14_return,phase_1,,yesno,Will [dog_name_1a] always return if you call for him/her?,,,,,,,[q02_main_1a(12)] = '1',,RH,,,,
+q15_main,phase_1,,checkbox,"Which of the following overactive/hyperactive behaviors has [dog_name_1a] exhibited?
 
 <font size=1 color=""blue"">Check all that apply</font>","1, Moving or jumping constantly | 2, Difficulty settling | 3, Highly distractible | 4, Impulsive",,,,,,[q02_main_1a(13)] = '1',,LV,,,,
-phase1_repeat ,phase_1,<center>Do You Have Other Dogs?</center>,yesno,Do you have another dog you that you would like to complete the survey for?,,,,,,,,y,RH,,,,
+phase1_repeat,phase_1,<center>Do You Have Other Dogs?</center>,yesno,Do you have another dog you that you would like to complete the survey for?,,,,,,,,y,RH,,,,
 feedback_score,phase_1_feedback, <center>Feedback</center>,calc,Feedback score:,[event_1_arm_1][q02_score_1a] + [event_1_arm_1][q02_score_1b] + [event_1_arm_1][q02_score_1c] + [event_1_arm_1][q02_score_1d] + [event_1_arm_1][q02_score_1e],,,,,,,,,,,,@HIDDEN
 feedback_length,phase_1_feedback,,yesno,Did you find this survey to be too long?,,,,,,,,,RH,,,,
 feedback_followup,phase_1_feedback,,yesno,"Would you be willing to participate in a follow-up survey about what solutions, if any, you have used to try to resolve the behavior problems of your canine companions?",,,,,,,[feedback_score] > '0',,RH,,,,

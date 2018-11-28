@@ -1,6 +1,0 @@
-users:
-  - total: 3201
-  - invalid: 3
-  - complete: 2901
-dogs:
-  - total: 5018

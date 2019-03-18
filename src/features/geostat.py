@@ -46,8 +46,10 @@ class Extractor(object):
         self.__postal_dict = {}
 
     def populate_dataframe(self):
-        self.__df = pd.read_sql_query("select zip_code from users;",
-                                      self.__db.get_connection())
+        query = ('SELECT zip_code FROM users JOIN dogs USING (record_id) '
+                 'WHERE question_reason_for_part_3 = 0 '
+                 'OR (question_reason_for_part_3 = 1 AND q01_main != 1);')
+        self.__df = pd.read_sql_query(query, self.__db.get_connection())
 
     def translate_zip_codes(self):
         self.__df['translation'] = self.__df['zip_code'].apply(

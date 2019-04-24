@@ -242,8 +242,7 @@ def exportFigure(figure, title):
 
 
 def printTitle(title):
-    msg = '\n{} {}'.format(title.upper(), '-'*(80-len(title)-1))
-    print(msg)
+    print('\n{}\n{}\n'.format(('-'*80), title.upper()))
 
 
 # Calculations
@@ -526,7 +525,7 @@ def bite_severity_by_behavior_problem():
 
 
 def bite_severity_fear_anxiety():
-    printTitle('bite severity w/ fear/anxiety')
+    printTitle('bite severity by fear/anxiety behavior problems')
     print('Overall bite severity:')
     fields = ', '.join(FR.fields[FR.categories[1]])
     labels = list(FR.labels[FR.categories[1]].values())

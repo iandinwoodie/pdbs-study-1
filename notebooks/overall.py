@@ -27,7 +27,7 @@ TOTAL_DOGS = 0
 REMAINING_DOGS = 0
 PREVALENCE = lambda x: (x / REMAINING_DOGS) * 100
 CATEGORY_MATRIX = pd.DataFrame()
-NITER = 1000
+NITER = 10
 
 # Database Globals
 USER_TABLE = 'users'
@@ -639,17 +639,14 @@ def bite_severity_fear_anxiety():
     print(df)
 
 
-def biting_sex_and_neuter_status():
+def bite_prevalence_sex_and_neuter_status():
     printTitle('bite prevalence by sex and neuter status')
-    fields = ['q03_severity']
-    labels = ['severity']
+    fields = ['q03_form_5']
+    labels = ['bites']
     fields.extend(('dog_sex', 'dog_spayed'))
     labels.extend(('Gender', 'Neutered'))
     fields = ', '.join(fields)
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
-
-    df['bites'] = np.where(df['severity'] > 0, 1, 0)
-    df = df.drop(columns=['severity'])
 
     df_intact_male = df[(df['Gender'] == 1) & (df['Neutered'] == 0)].drop(
         columns=['Gender', 'Neutered'])
@@ -684,14 +681,14 @@ def main():
     number_of_participating_dogs()
     adjusted_sample()
     impact_of_gender_on_house_soiling_w_fear_anxiety()
-    #prevalence_of_biting()
-    #bite_people()
-    #bite_dogs()
-    #multiple_bites_per_incident()
-    #bite_severity()
-    #bite_severity_by_behavior_problem()
-    #bite_severity_fear_anxiety()
-    #biting_sex_and_neuter_status()
+    prevalence_of_biting()
+    bite_people()
+    bite_dogs()
+    multiple_bites_per_incident()
+    bite_severity()
+    bite_severity_by_behavior_problem()
+    bite_severity_fear_anxiety()
+    bite_prevalence_sex_and_neuter_status()
 
 
 if __name__ == "__main__":

@@ -40,6 +40,8 @@ BIAS_FILTER = '''
     OR (question_reason_for_part_3 = 1 AND q01_main != 1)'''
 CON = sqlite3.connect('../data/processed/processed.db')
 
+
+# Helper Functions
 def createStringDataFrame(table, fields, labels, filtered=True):
     query = 'SELECT ' + fields + ' FROM ' + table
     if filtered:
@@ -49,16 +51,20 @@ def createStringDataFrame(table, fields, labels, filtered=True):
     df.columns = labels
     return df
 
+
 def convertToNumeric(df):
     df = df.apply(pd.to_numeric, errors='coerce')
     return df
+
 
 def createNumericDataFrame(table, fields, labels, filtered=True):
     df = createStringDataFrame(table, fields, labels, filtered)
     return convertToNumeric(df)
 
+
 def replaceFields(df, column, replacement_dict):
     df[column].replace(replacement_dict, inplace=True)
+
 
 def getValueCountAndPrevalence(df, field):
     s = df[field].value_counts()
@@ -66,6 +72,7 @@ def getValueCountAndPrevalence(df, field):
     rv = pd.concat([s, p], axis=1)
     rv.columns = ['frequency', 'prevalence']
     return rv
+
 
 def createCategoryMatrix():
     fields = []
@@ -95,6 +102,7 @@ def createCategoryMatrix():
     df = pd.DataFrame(pvalue).sort_index(ascending=True)
     return df
 
+
 def createQuestionMatrix():
     fields = ''
     for cat, sublist in FR.fields.items():
@@ -120,6 +128,7 @@ def createQuestionMatrix():
     df = pd.DataFrame(pvalue).sort_index(ascending=True)
     return df
 
+
 def createCorrelationMatrix():
     fields = []
     labels = []
@@ -135,6 +144,7 @@ def createCorrelationMatrix():
     fields = ', '.join(fields)
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
     return df.corr()
+
 
 def createOddsRatioMatrix():
     fields = []
@@ -164,13 +174,16 @@ def createOddsRatioMatrix():
     df = pd.DataFrame(pvalue).sort_index(ascending=True)
     return df
 
+
 def displayOddsRatio(df):
     odds, ci_low, ci_high, tot = getOddsRatioAndConfidenceInterval(df)
     print('OR = %.2f, 95%% CI: %.2f-%.2f, n = %d'
           %(round(odds, 2), round(ci_low, 2), round(ci_high, 2), tot))
 
+
 def getOddsRatio(df):
     return (df[1][1]/df[1][0])/(df[0][1]/df[0][0])
+
 
 def getOddsRatioAndConfidenceInterval(df):
     odds = getOddsRatio(df)
@@ -180,6 +193,7 @@ def getOddsRatioAndConfidenceInterval(df):
     ci_high = math.exp(nl_or + (1.96 * se_nl_or))
     tot = df[0][0] + df[0][1] + df[1][0] + df[1][1]
     return odds, ci_low, ci_high, tot
+
 
 def get_significance_category(p):
     if np.isnan(p):
@@ -191,19 +205,23 @@ def get_significance_category(p):
     else:
         return 1
 
+
 def displaySeriesMedian(s, units=""):
     print('MD = %.2f %s (SD = %.2f, min = %.2f, max = %.2f, n = %d)'
           %(round(s.median(), 2), units, round(s.std(), 2), round(s.min(), 2), round(s.max(), 2), s.count()))
 
+
 def displaySeriesMean(s, units=""):
     print('M = %.2f %s (SD = %.2f, min = %.2f, max = %.2f, n = %d)'
           %(round(s.mean(), 2), units, round(s.std(), 2), round(s.min(), 2), round(s.max(), 2), s.count()))
+
 
 def convert_to_binary_response(x, y=1):
     x = float(x)
     if x < y:
         return 0
     return 1
+
 
 def exportTable(data, title):
     if not SAVE_OUTPUT:
@@ -214,6 +232,7 @@ def exportTable(data, title):
         tf.write(df.to_latex())
         tf.write(r'\end{document}')
 
+
 def exportFigure(figure, title):
     if not SAVE_OUTPUT:
         return
@@ -221,13 +240,23 @@ def exportFigure(figure, title):
     figure.tight_layout()
     figure.savefig(file_, format='pdf')
 
+
+def printTitle(title):
+    msg = '\n{} {}'.format(title.upper(), '-'*(80-len(title)-1))
+    print(msg)
+
+
+# Calculations
 def number_of_participants():
+    printTitle('number of participants')
     df = createNumericDataFrame(USER_TABLE, 'COUNT(*)', ['count'], filtered=False)
     # Assign value to global.
     TOTAL_USERS = df['count'][0]
     print('N = %d owners [unadjusted]' %TOTAL_USERS)
 
+
 def number_of_participating_dogs():
+    printTitle('number of participating dogs')
     df = createNumericDataFrame(DOG_TABLE, 'COUNT(*)', ['count'], filtered=False)
     # Assign value to global.
     TOTAL_DOGS = df['count'][0]
@@ -235,6 +264,7 @@ def number_of_participating_dogs():
 
 
 def adjusted_sample():
+    printTitle('adjusted sample')
     fields = 'q02_score'
     labels = ['Score']
     df_adjusted_dogs = createNumericDataFrame(DOG_TABLE, fields, labels)
@@ -242,12 +272,12 @@ def adjusted_sample():
     df_adjusted_users = createNumericDataFrame(USER_TABLE, 'COUNT(DISTINCT email)', ['count'])
     REMAINING_USERS = df_adjusted_users['count'][0]
     # Display the count results.
-    print('Adjusted study population:')
     print('N = %d owners (adjusted)' %REMAINING_USERS)
     print('N = %d dogs (adjusted)' %REMAINING_DOGS)
 
 
 def impact_of_gender_on_house_soiling_w_fear_anxiety():
+    printTitle('impact of gender on house soiling w/ fear/anxiety')
     # Of the dogs with fear/anxiety that exhibited inappropriate elimination,
     # there was no statistical difference between the sexes, although the
     # majority (56%) were female. (Needs Chi2)
@@ -256,10 +286,11 @@ def impact_of_gender_on_house_soiling_w_fear_anxiety():
     df = createStringDataFrame(DOG_TABLE, fields, labels)
     df = df[df[labels[0]] != '']
     df = df.apply(pd.to_numeric)
-    print(df)
+    #TODO
 
 
 def prevalence_of_biting():
+    printTitle('prevalence of biting')
     fields = 'q03_form_5'
     labels = ['bites']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
@@ -268,6 +299,7 @@ def prevalence_of_biting():
 
 
 def bite_people():
+    printTitle('prevalence of biting people')
     fields = 'q03_form_5'
     labels = ['bites']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
@@ -280,11 +312,12 @@ def bite_people():
     fields = 'q03_person_freq'
     labels = ['person count']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
-    print('\nNumber of times the dog has bitten a person:')
+    print('Number of times the dog has bitten a person:')
     displaySeriesMedian(df[labels[0]], labels[0])
 
 
 def bite_dogs():
+    printTitle('prevalence of biting dogs')
     fields = 'q03_form_5'
     labels = ['bites']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
@@ -297,26 +330,26 @@ def bite_dogs():
     fields = 'q03_dog_freq'
     labels = ['dog count']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
-    print('\nNumber of times the dog has bitten a dog:')
+    print('Number of times the dog has bitten a dog:')
     displaySeriesMedian(df[labels[0]], labels[0])
 
 
 def multiple_bites_per_incident():
+    printTitle('prevalence of multiple bite incidents')
     fields = 'q03_form_5'
     labels = ['bites']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
     all_bites = df.sum()[0]
-
     fields = 'q03_bite_quantity'
     labels = ['multi']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
-
     tot = df.sum()
     print('Dogs with multi-bite incidents: n = %d dogs (%d%%)' %(tot, round((tot/all_bites)*100, 0)))
 
 
 def bite_severity():
-    print('OVERALL:')
+    printTitle('non-specific bite severity')
+    print('Overall bite severity:')
     fields = 'q03_severity'
     labels = ['severity']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
@@ -334,7 +367,7 @@ def bite_severity():
             broke_skin += row[0]
         if level == 5:
             multiple_bites += row[0]
-    print('\nteeth contact: n = %d (%d%%)'
+    print('teeth contact: n = %d (%d%%)'
           %(teeth_contact,round((teeth_contact/df['count'].sum())*100, 0)))
     print('broke skin: n = %d (%d%%)'
           %(broke_skin,round((broke_skin/df['count'].sum())*100, 0)))
@@ -342,7 +375,7 @@ def bite_severity():
           %(multiple_bites,round((multiple_bites/df['count'].sum())*100, 0)))
 
 
-    print('\nPEOPLE:')
+    print('\nBite severity (target=people):')
     fields = 'q03_severity, q03_person'
     labels = ['severity', 'person']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
@@ -362,14 +395,14 @@ def bite_severity():
             broke_skin += row[0]
         if level == 5:
             multiple_bites += row[0]
-    print('\nteeth contact: n = %d (%d%%)'
+    print('teeth contact: n = %d (%d%%)'
           %(teeth_contact,round((teeth_contact/df['count'].sum())*100, 0)))
     print('broke skin: n = %d (%d%%)'
           %(broke_skin,round((broke_skin/df['count'].sum())*100, 0)))
     print('multiple bites: n = %d (%d%%)'
           %(multiple_bites,round((multiple_bites/df['count'].sum())*100, 0)))
 
-    print('\nDOGS:')
+    print('\nBite severity (target=dogs):')
     fields = 'q03_severity, q03_dog'
     labels = ['severity', 'dog']
     df = createNumericDataFrame(DOG_TABLE, fields, labels, filtered=True)
@@ -389,7 +422,7 @@ def bite_severity():
             broke_skin += row[0]
         if level == 5:
             multiple_bites += row[0]
-    print('\nteeth contact: n = %d (%d%%)'
+    print('teeth contact: n = %d (%d%%)'
           %(teeth_contact,round((teeth_contact/df['count'].sum())*100, 0)))
     print('broke skin: n = %d (%d%%)'
           %(broke_skin,round((broke_skin/df['count'].sum())*100, 0)))
@@ -398,7 +431,8 @@ def bite_severity():
 
 
 def bite_severity_by_behavior_problem():
-    print('OVERALL:')
+    printTitle('bite severity by behavior problem')
+    print('Overall bite severity:')
     fields = []
     labels = []
     for counter, cat in enumerate(FR.categories, 1):
@@ -429,7 +463,7 @@ def bite_severity_by_behavior_problem():
     df.columns.name = 'Behavior problem'
     print(df)
 
-    print('\nPEOPLE:')
+    print('\nBite severity (target=people):')
     fields = []
     labels = []
     for counter, cat in enumerate(FR.categories, 1):
@@ -461,7 +495,7 @@ def bite_severity_by_behavior_problem():
     df.columns.name = 'Behavior problem'
     print(df)
 
-    print('\nDOGS:')
+    print('\nBite severity (target=dogs):')
     fields = []
     labels = []
     for counter, cat in enumerate(FR.categories, 1):
@@ -492,7 +526,8 @@ def bite_severity_by_behavior_problem():
 
 
 def bite_severity_fear_anxiety():
-    print('OVERALL:')
+    printTitle('bite severity w/ fear/anxiety')
+    print('Overall bite severity:')
     fields = ', '.join(FR.fields[FR.categories[1]])
     labels = list(FR.labels[FR.categories[1]].values())
     fields += ', q03_severity'
@@ -518,7 +553,7 @@ def bite_severity_fear_anxiety():
     df.columns.name = 'Behavior problem'
     print(df)
 
-    print('\nPEOPLE:')
+    print('\nBite severity (target=people):')
     fields = ', '.join(FR.fields[FR.categories[1]])
     labels = list(FR.labels[FR.categories[1]].values())
     fields += ', q03_severity, q03_person'
@@ -543,7 +578,7 @@ def bite_severity_fear_anxiety():
     df.columns.name = 'Behavior problem'
     print(df)
 
-    print('\nDOGS:')
+    print('\nBite severity (target=dogs):')
     fields = ', '.join(FR.fields[FR.categories[1]])
     labels = list(FR.labels[FR.categories[1]].values())
     fields += ', q03_severity, q03_dog'
@@ -569,7 +604,8 @@ def bite_severity_fear_anxiety():
     print(df)
 
 
-def bite_severity_sex_and_neuter_status():
+def biting_sex_and_neuter_status():
+    printTitle('bite prevalence by sex and neuter status')
     fields = ['q03_severity']
     labels = ['severity']
     fields.extend(('dog_sex', 'dog_spayed'))
@@ -603,7 +639,6 @@ def bite_severity_sex_and_neuter_status():
                                                        'castrated males': neutered_male_p,
                                                        'intact females': intact_female_p,
                                                        'spayed females': neutered_female_p})
-    print()
     for index, row in df.iterrows():
         for index2, row2 in row.iteritems():
             print('%s: n = %d (%d%%)' %(index2, (row2), round((row2/df.sum().sum())*100, 0)))
@@ -614,14 +649,14 @@ def main():
     number_of_participating_dogs()
     adjusted_sample()
     impact_of_gender_on_house_soiling_w_fear_anxiety()
-#    prevalence_of_biting()
+    #prevalence_of_biting()
     bite_people()
     bite_dogs()
     multiple_bites_per_incident()
     bite_severity()
     bite_severity_by_behavior_problem()
     bite_severity_fear_anxiety()
-    bite_severity_sex_and_neuter_status()
+    biting_sex_and_neuter_status()
 
 
 if __name__ == "__main__":

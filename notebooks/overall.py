@@ -19,9 +19,6 @@ import sys
 sys.path.append("..")
 from src.utilities import field_registry as fieldreg
 
-# Switches
-SAVE_OUTPUT = False
-
 # Data Globals
 FR = fieldreg.FieldRegistry()
 TOTAL_USERS = 0
@@ -250,6 +247,7 @@ def number_of_participants():
     printTitle('number of participants')
     df = createNumericDataFrame(USER_TABLE, 'COUNT(*)', ['count'], filtered=False)
     # Assign value to global.
+    global TOTAL_USERS
     TOTAL_USERS = df['count'][0]
     print('N = %d owners [unadjusted]' %TOTAL_USERS)
 
@@ -258,6 +256,7 @@ def number_of_participating_dogs():
     printTitle('number of participating dogs')
     df = createNumericDataFrame(DOG_TABLE, 'COUNT(*)', ['count'], filtered=False)
     # Assign value to global.
+    global TOTAL_DOGS
     TOTAL_DOGS = df['count'][0]
     print('N = %d dogs [unadjusted]' %TOTAL_DOGS)
 
@@ -267,8 +266,10 @@ def adjusted_sample():
     fields = 'q02_score'
     labels = ['Score']
     df_adjusted_dogs = createNumericDataFrame(DOG_TABLE, fields, labels)
+    global REMAINING_DOGS
     REMAINING_DOGS = len(df_adjusted_dogs.index)
     df_adjusted_users = createNumericDataFrame(USER_TABLE, 'COUNT(DISTINCT email)', ['count'])
+    global REMAINING_USERS
     REMAINING_USERS = df_adjusted_users['count'][0]
     # Display the count results.
     print('N = %d owners (adjusted)' %REMAINING_USERS)
@@ -279,13 +280,13 @@ def impact_of_gender_on_house_soiling_w_fear_anxiety():
     printTitle('impact of gender on house soiling w/ fear/anxiety')
     # Of the dogs with fear/anxiety that exhibited inappropriate elimination,
     # there was no statistical difference between the sexes, although the
-    # majority (56%) were female. (Needs Chi2)
+    # majority (56%) were female.
     fields = 'dog_sex, q02_main_4, q02_main_2' 
     labels = ['sex', 'house soiling', 'fear/anxiety']
     df = createStringDataFrame(DOG_TABLE, fields, labels)
     df = df[df[labels[0]] != '']
     df = df.apply(pd.to_numeric)
-    #TODO
+    # TODO: calculate chi2 and bootstrapped CIs
 
 
 def prevalence_of_biting():
@@ -648,7 +649,7 @@ def main():
     number_of_participating_dogs()
     adjusted_sample()
     impact_of_gender_on_house_soiling_w_fear_anxiety()
-    #prevalence_of_biting()
+    prevalence_of_biting()
     bite_people()
     bite_dogs()
     multiple_bites_per_incident()

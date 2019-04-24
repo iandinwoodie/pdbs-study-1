@@ -27,7 +27,7 @@ TOTAL_DOGS = 0
 REMAINING_DOGS = 0
 PREVALENCE = lambda x: (x / REMAINING_DOGS) * 100
 CATEGORY_MATRIX = pd.DataFrame()
-NITER = 10
+NITER = 10000
 
 # Database Globals
 USER_TABLE = 'users'
@@ -676,6 +676,90 @@ def bite_prevalence_sex_and_neuter_status():
             print('%s: n = %d (%d%%)' %(index2, (row2), round((row2/df.sum().sum())*100, 0)))
 
 
+def impact_of_gender_on_biting():
+    printTitle('impact of gender on biting')
+    fields = 'dog_sex, q03_form_5'
+    labels = ['sex', 'bites']
+    df = createStringDataFrame(DOG_TABLE, fields, labels)
+    df = df[df[labels[0]] != '']
+    df = df.apply(pd.to_numeric)
+
+    def gender_to_binary_response(x):
+        x = int(x)
+        if x != 1:
+            return 0 # female
+        return 1 # male
+
+    df[labels[0]] = df[labels[0]].apply(lambda x: gender_to_binary_response(x))
+    boot_df = df.copy()
+    # Cross tabulate the relevant columns.
+    contingency = pd.crosstab(df[labels[0]], df[labels[1]], margins=False)
+    # Execute a chi-squared test of independence.
+    c, p, dof, expected = scs.chi2_contingency(contingency, correction=False)
+    print('Chi-square Test of Independence:')
+    print('chi2 = %f, p = %.2E, dof = %d' %(c, p, dof))
+    displayOddsRatio(contingency)
+
+    def get_bootstrap_odds_ratio_ci(data, count=10, alpha=0.95):
+        #start = timer()
+        arr = np.array([])
+        for i in range(count):
+            df = data.sample(len(data.index), replace=True)
+            contingency = pd.crosstab(df[labels[0]], df[labels[1]], margins=False)
+            odds, ci_low, ci_high, tot = getOddsRatioAndConfidenceInterval(contingency)
+            arr = np.append(arr, odds)
+        arr = np.sort(arr)
+        lower = (1-alpha)/2
+        upper = alpha+lower
+        print('95%% CI: %.2f-%.2f' %(arr[int(lower * len(arr))], arr[int(upper * len(arr))]))
+        #end = timer()
+        #print('\nbootstrap time: %.2f' %(end-start))
+
+    get_bootstrap_odds_ratio_ci(boot_df, count=NITER)
+
+
+def impact_of_neuter_status_on_biting():
+    printTitle('impact of neuter status on biting')
+    fields = 'dog_spayed, q03_form_5'
+    labels = ['neutered', 'bites']
+    df = createStringDataFrame(DOG_TABLE, fields, labels)
+    df = df[df[labels[0]] != '']
+    df = df.apply(pd.to_numeric)
+
+    def gender_to_binary_response(x):
+        x = int(x)
+        if x != 1:
+            return 0 # female
+        return 1 # male
+
+    df[labels[0]] = df[labels[0]].apply(lambda x: gender_to_binary_response(x))
+    boot_df = df.copy()
+    # Cross tabulate the relevant columns.
+    contingency = pd.crosstab(df[labels[0]], df[labels[1]], margins=False)
+    # Execute a chi-squared test of independence.
+    c, p, dof, expected = scs.chi2_contingency(contingency, correction=False)
+    print('Chi-square Test of Independence:')
+    print('chi2 = %f, p = %.2E, dof = %d' %(c, p, dof))
+    displayOddsRatio(contingency)
+
+    def get_bootstrap_odds_ratio_ci(data, count=10, alpha=0.95):
+        #start = timer()
+        arr = np.array([])
+        for i in range(count):
+            df = data.sample(len(data.index), replace=True)
+            contingency = pd.crosstab(df[labels[0]], df[labels[1]], margins=False)
+            odds, ci_low, ci_high, tot = getOddsRatioAndConfidenceInterval(contingency)
+            arr = np.append(arr, odds)
+        arr = np.sort(arr)
+        lower = (1-alpha)/2
+        upper = alpha+lower
+        print('95%% CI: %.2f-%.2f' %(arr[int(lower * len(arr))], arr[int(upper * len(arr))]))
+        #end = timer()
+        #print('\nbootstrap time: %.2f' %(end-start))
+
+    get_bootstrap_odds_ratio_ci(boot_df, count=NITER)
+
+
 def main():
     number_of_participants()
     number_of_participating_dogs()
@@ -689,6 +773,8 @@ def main():
     bite_severity_by_behavior_problem()
     bite_severity_fear_anxiety()
     bite_prevalence_sex_and_neuter_status()
+    impact_of_gender_on_biting()
+    impact_of_neuter_status_on_biting()
 
 
 if __name__ == "__main__":

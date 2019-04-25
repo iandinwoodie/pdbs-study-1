@@ -796,7 +796,7 @@ def main():
     number_of_participants()
     number_of_participating_dogs()
     adjusted_sample()
-    #impact_of_gender_on_house_soiling_w_fear_anxiety()
+    impact_of_gender_on_house_soiling_w_fear_anxiety()
     #prevalence_of_biting()
     #bite_people()
     #bite_dogs()
@@ -805,8 +805,8 @@ def main():
     #bite_severity_by_behavior_problem()
     #bite_severity_fear_anxiety()
     #bite_prevalence_sex_and_neuter_status()
-    #impact_of_gender_on_biting()
-    #impact_of_neuter_status_on_biting()
+    impact_of_gender_on_biting()
+    impact_of_neuter_status_on_biting()
     impact_of_fear_anxiety_biting()
 
 

@@ -760,21 +760,54 @@ def impact_of_neuter_status_on_biting():
     get_bootstrap_odds_ratio_ci(boot_df, count=NITER)
 
 
+def impact_of_fear_anxiety_biting():
+    printTitle('impact of fear/anxiety on biting')
+    fields = 'q03_form_5, q02_main_2' 
+    labels = ['biting', 'fear/anxiety']
+    df = createNumericDataFrame(DOG_TABLE, fields, labels)
+    boot_df = df.copy()
+    # Cross tabulate the relevant columns.
+    contingency = pd.crosstab(df[labels[0]], df[labels[1]], margins=False)
+    # Execute a chi-squared test of independence.
+    c, p, dof, expected = scs.chi2_contingency(contingency, correction=False)
+    print('Chi-square Test of Independence:')
+    print('chi2 = %f, p = %.2E, dof = %d' %(c, p, dof))
+    displayOddsRatio(contingency)
+
+    def get_bootstrap_odds_ratio_ci(data, count=10, alpha=0.95):
+        #start = timer()
+        arr = np.array([])
+        for i in range(count):
+            df = data.sample(len(data.index), replace=True)
+            contingency = pd.crosstab(df[labels[0]], df[labels[1]], margins=False)
+            odds, ci_low, ci_high, tot = getOddsRatioAndConfidenceInterval(contingency)
+            arr = np.append(arr, odds)
+        arr = np.sort(arr)
+        lower = (1-alpha)/2
+        upper = alpha+lower
+        print('95%% CI: %.2f-%.2f' %(arr[int(lower * len(arr))], arr[int(upper * len(arr))]))
+        #end = timer()
+        #print('\nbootstrap time: %.2f' %(end-start))
+
+    get_bootstrap_odds_ratio_ci(boot_df, count=NITER)
+
+
 def main():
     number_of_participants()
     number_of_participating_dogs()
     adjusted_sample()
-    impact_of_gender_on_house_soiling_w_fear_anxiety()
-    prevalence_of_biting()
-    bite_people()
-    bite_dogs()
-    multiple_bites_per_incident()
-    bite_severity()
-    bite_severity_by_behavior_problem()
-    bite_severity_fear_anxiety()
-    bite_prevalence_sex_and_neuter_status()
-    impact_of_gender_on_biting()
-    impact_of_neuter_status_on_biting()
+    #impact_of_gender_on_house_soiling_w_fear_anxiety()
+    #prevalence_of_biting()
+    #bite_people()
+    #bite_dogs()
+    #multiple_bites_per_incident()
+    #bite_severity()
+    #bite_severity_by_behavior_problem()
+    #bite_severity_fear_anxiety()
+    #bite_prevalence_sex_and_neuter_status()
+    #impact_of_gender_on_biting()
+    #impact_of_neuter_status_on_biting()
+    impact_of_fear_anxiety_biting()
 
 
 if __name__ == "__main__":

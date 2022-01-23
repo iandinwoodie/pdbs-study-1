@@ -1,4 +1,4 @@
-Demographics and Comorbidity of Behavior Problems in Dogs
+pdbs-study-1
 ==============================
 
 Analysis repository for the paper titled Demographics and Comorbidity of Behavior Problems in Dogs.

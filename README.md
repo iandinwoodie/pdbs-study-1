@@ -31,5 +31,5 @@ Project Organization
     │   └── utilities      <- Analysis utilities.
     │       └── build_features.py
     │
-    └── tabless            <- Generated tables to be used in reporting (PDF and LaTeX).
+    └── tables             <- Generated tables to be used in reporting (PDF and LaTeX).
 
